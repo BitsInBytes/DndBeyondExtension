@@ -20,30 +20,43 @@ chrome.extension.sendMessage({}, function (response) {
 
                 GLOBAL_SETTINGS_OBJECT = data;
 
-                if (GLOBAL_SETTINGS_OBJECT.DndBeyond_Enabled === true) {
-                    $.ajax({
-                        contentType: 'application/json',
-                        dataType: 'json',
-						url: "https://localhost:44335/v3/resources",
-                        method: 'POST',
-                        processData: false,
-                        data: JSON.stringify(getServicePayload(false)),
-                        success: function (data) {
-                            if (!data.versionSupported) {
-                                displayError("Extension version no longer supported, please update your browser extensions.");
-                            } else {
-                                GLOBAL_RESOURCES_OBJECT = data;
+					if (GLOBAL_SETTINGS_OBJECT.DndBeyond_Enabled === true) {
 
-                                //----------------------------------------------
-                                //-After this point js is dynamic from service!-
-                                //----------------------------------------------
-                                jQuery.globalEval(data.javascriptContainer.pageJavascript);
-                            }
-                        },
-                        error: function () {
-                            displayError("Extension failed to get resources from the service.");
-                        }
-                    });
+
+						GLOBAL_SERVICE_OBJECT = {
+							exists: true,
+							service_url: "https://localhost:44335/v3"
+						};
+
+						GLOBAL_WIDGET_OBJECT = {
+							exists: true,
+							name: "Dice Roller",
+							icon: chrome.extension.getURL("images/icon48.png")
+						};
+
+						GLOBAL_CHARACTER_OBJECT = {
+							exists: false
+						};
+
+						GLOBAL_MONSTER_OBJECT = {
+							exists: false
+						};
+
+						GLOBAL_SETTINGS_OBJECT = defaultSettingsObject(data);
+
+						let url = window.location.href.toLowerCase();
+
+						//On character page (but not editing the character)
+						if (url.includes("/profile/") && url.includes("/characters/") && !url.includes("/builder/")) {
+							//loadCharacterData();
+						}
+
+						//createWidget();
+
+						DiceRollerWidget.LoadWidget();
+
+
+
                 }
 		    });
 		}
