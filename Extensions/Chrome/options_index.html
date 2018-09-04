@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>D&amp;D Beyond Interaction Settings</title>
+        <meta name="author" content="BitsInBytes" />
+        <meta name="description" content="D&amp;D Beyond Interaction Settings" />
+        <link id="favicon" rel="icon" href="images/icon16.png">
+        <link rel="stylesheet" href="css/options.css" type="text/css" />
+        <script src="js/jquery/jquery.min.js"></script>
+        <script src="js/options/options.js"></script>
+    </head>
+    <body>
+    <div id="page">
+        
+        <div id="logo">
+            <img src="images/icon48.png" alt="logo">
+            <h1>D&amp;D Beyond Interaction Settings</h1>
+        </div>
+
+        <div id="nav">
+            <ul>
+                <li><a href="https://www.patreon.com/bitsinbytes_dndextension" target="_blank">Patreon</a></li>
+                <li><a href="https://bitbucket.org/BitsInBytes/d-d-beyond-interaction-extension/issues/new" target="_blank">Report Bug</a></li>
+                <li><a href="https://twitter.com/BitsInBytes" target="_blank">Contact</a></li>
+                <li><a href="https://www.youtube.com/channel/UCWgi2FS3zJv_3c_RtiDk6_Q" target="_blank">Youtube</a></li>
+                <li><a href="https://dndbeyondextension.bitsinbytes.com" target="_blank">Project Page</a></li>
+            </ul>
+        </div>
+
+        <div id="content">
+            
+            <h2>General</h2>
+            <div>
+                <form>
+                    <label>Enabled: </label>
+                    <input id="enabled" type="checkbox"/>
+                </form>
+            </div>
+
+            <br/><br />
+            
+            <h2>Widget</h2>
+            <div>
+                <form>
+                    <label>Widget Enabled: </label>
+                    <input id="widgetEnabled" type="checkbox" />
+                    
+                    <br/><br/><br/>
+
+                    <label>Vertical Widget Display: </label>
+                    <input id="widgetVerticalEnabled" type="checkbox" />
+                </form>
+            </div>
+
+            <br /><br />
+
+            <h2>Monster Pages</h2>
+            <div>
+                <form>
+                    <label>Monsters Enabled: </label>
+                    <input id="monstersEnabled" type="checkbox" />
+                </form>
+            </div>
+
+            <br /><br />
+            
+            <h2>Character Page</h2>
+            <div>
+                <form>
+                    <label>Characters Enabled: </label>
+                    <input id="charactersEnabled" type="checkbox" />
+                </form>
+            </div>
+
+            <br /><br />
+
+            <h2>Slack Integration</h2>
+            <div>
+                <form>
+                    <label>Slack Enabled: </label>
+                    <input type="checkbox" id="slackEnabled"/>
+
+                    <br/><br/><br/>
+
+                    <label>Api Token: </label>
+                    <input type="text" id="token">
+
+                    <br/><br/><br/>
+
+                    <label>Channel: </label>
+                    <input type="text" id="channel">
+                </form>
+            </div>
+            
+            <br /><br />
+
+            <h2>Beta</h2>
+            <div>
+                <form>
+                    <label>Beta Code: </label>
+                    <input type="text" id="betaCode">
+                </form>
+            </div>
+
+            <br /><br />
+
+            <h2>Save Options</h2>
+            <br />
+            <div>
+                <button id="saveButton">Save Settings</button>
+            </div>
+        </div>
+
+        <div id="footer">
+            <p>
+                Designed And Programmed By BitsInBytes.com
+                <br /><br />
+                Icons made by <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons" target="_blank">Roundicons</a> from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+            </p>
+        </div>
+    </div>
+    </body>
+</html>
