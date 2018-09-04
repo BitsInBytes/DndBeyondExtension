@@ -1,0 +1,61 @@
+{
+    "name": "D&D Beyond Interaction",
+    "version": "1.3.1",
+    "manifest_version": 2,
+    "description": "Manipulates the D&D Beyond site to allow clickable text that will generate roll results for dice.",
+    "homepage_url": "http://dndbeyondextension.bitsinbytes.com",
+    "icons": {
+        "16": "images/icon16.png",
+        "48": "images/icon48.png",
+        "98": "images/icon98.png",
+        "128": "images/icon128.png",
+        "512": "images/icon512.png"
+    },
+    "options_page": "options_index.html",
+    "browser_action": {
+        "default_icon": "images/icon19.png",
+        "default_title": "D&D Beyond Interaction",
+        "default_popup": "browser_action.html"
+    },
+    "permissions": [
+        "storage",
+        "contentSettings",
+        "https://www.dndbeyond.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.dndbeyond.com/*"
+            ],
+            "js": [
+                "js/jquery/jquery.min.js",
+                "js/jquery/jquery.mousewheel.min.js",
+                "js/jquery/jquery-ui.min.js",
+                "js/jquery/jquery.dialogextend.min.js",
+                "js/jquery/jquery.waituntilexists.min.js",
+                "js/notifications/notify.min.js",
+                "js/extension/Initialize.js"
+            ],
+            "css": [
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        "images/d4.png",
+        "images/d6.png",
+        "images/d8.png",
+        "images/d10.png",
+        "images/d12.png",
+        "images/d20.png",
+
+        "images/icon16.png",
+        "images/icon48.png",
+        "images/icon98.png",
+        "images/icon128.png",
+        "images/icon512.png",
+
+        "images/close_icon.png",
+        "images/minimize_icon.png",
+        "images/restore_icon.png"
+    ]
+}
