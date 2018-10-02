@@ -1,4 +1,7 @@
 class DiceRollerWidget{
+
+	"use strict";
+
     constructor() {    }
 
     static LoadWidget()
