@@ -45,7 +45,7 @@ class Settings
             this.DndBeyond_SlackToken = data.DndBeyond_SlackToken;
         }
 
-        if (data.DndBeyond_SlackChannel === undefined
+        if (data.DndBeyond_SlackChannel === undefined)
         {
             this.DndBeyond_SlackChannel = "";
         }
