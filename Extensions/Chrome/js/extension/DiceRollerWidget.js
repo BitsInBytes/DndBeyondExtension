@@ -4,19 +4,23 @@ class DiceRollerWidget
     {
         this.Settings = settings;
 
-        GLOBAL_WIDGET_OBJECT = {
-            exists: true,
-            name: "Dice Roller",
-            icon: chrome.extension.getURL("images/icon48.png")
-        };
+        this.Exists = true;
+        this.Name = "Dice Roller";
+        this.Icon = chrome.extension.getURL("images/icon48.png");
     }
 
     static Initialize(settings)
     {
         if(settings.DndBeyond_DiceRollerWidgetEnabled === true)
         {
-            (new DiceRollerWidget(settings)).Load();
+            var widget = new DiceRollerWidget(settings);
+            
+            widget.Load();
+
+            return widget;
         }
+
+		return { Exists: false };
     }
 
     Load()

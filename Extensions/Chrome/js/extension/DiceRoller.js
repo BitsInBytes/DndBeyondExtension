@@ -13,17 +13,17 @@
         var name = "N/A";
         var icon = "";
 
-        if (GLOBAL_CHARACTER_OBJECT.exists) {
-            name = GLOBAL_CHARACTER_OBJECT.name;
-            icon = GLOBAL_CHARACTER_OBJECT.icon;
+        if (GLOBAL_CHARACTER_OBJECT.Exists) {
+            name = GLOBAL_CHARACTER_OBJECT.Name;
+            icon = GLOBAL_CHARACTER_OBJECT.Icon;
         }
-        else if (GLOBAL_MONSTER_OBJECT.exists) {
-            name = GLOBAL_MONSTER_OBJECT.name;
-            icon = GLOBAL_MONSTER_OBJECT.icon;
+        else if (GLOBAL_MONSTER_OBJECT.Exists) {
+            name = GLOBAL_MONSTER_OBJECT.Name;
+            icon = GLOBAL_MONSTER_OBJECT.Icon;
         }
-        else if (GLOBAL_WIDGET_OBJECT.exists) {
-            name = GLOBAL_WIDGET_OBJECT.name;
-            icon = GLOBAL_WIDGET_OBJECT.icon;
+        else if (GLOBAL_WIDGET_OBJECT.Exists) {
+            name = GLOBAL_WIDGET_OBJECT.Name;
+            icon = GLOBAL_WIDGET_OBJECT.Icon;
         }
 
         var fd = new FormData();

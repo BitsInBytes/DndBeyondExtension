@@ -7,12 +7,11 @@ class Settings
 
     DefaultSettingsObject(data)
     {
-
-        DefaultVerison_1_0_0(data);
-        DefaultVerison_1_1_0(data);
-        DefaultVerison_1_1_2(data);
-        DefaultVerison_1_2_0(data);
-        DefaultVerison_1_3_0(data);
+        this.DefaultVerison_1_0_0(data);
+        this.DefaultVerison_1_1_0(data);
+        this.DefaultVerison_1_1_2(data);
+        this.DefaultVerison_1_2_0(data);
+        this.DefaultVerison_1_3_0(data);
     }
 
     DefaultVerison_1_0_0(data)

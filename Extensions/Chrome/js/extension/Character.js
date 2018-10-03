@@ -4,11 +4,9 @@
 	{
 		this.Settings = settings;
 
-		GLOBAL_CHARACTER_OBJECT = {
-            exists: true,
-            name: "N/A",
-            icon: chrome.extension.getURL("images/icon48.png")
-        };
+		this.Exists = true;
+        this.Name = "N/A";
+        this.Icon = chrome.extension.getURL("images/icon48.png");
 	}
 
     static Initialize(settings)
@@ -18,9 +16,15 @@
 		if(settings.DndBeyond_CharactersEnabled === true)
 		{
 			if (url.includes("/profile/") && url.includes("/characters/") && !url.includes("/builder/")) {
-				(new Character(settings)).loadCharacterData();
+				var char = new Character(settings);
+
+				char.loadCharacterData();
+
+				return char;
 			}
 		}
+
+		return { Exists: false };
 	}
 	
 	loadCharacterData()
@@ -28,8 +32,8 @@
 		var character = this;
 		
 		$(".ct-character-tidbits").waitUntilExists(function () {
-			GLOBAL_CHARACTER_OBJECT.icon = $('.ct-character-tidbits__avatar').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "");
-			GLOBAL_CHARACTER_OBJECT.name = $('.ct-character-tidbits__name').text();
+			character.Icon = $('.ct-character-tidbits__avatar').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "");
+			character.Nname = $('.ct-character-tidbits__name').text();
 		});
 	
 		//Short Rest Hit Point Dice; On checkbox click

@@ -22,27 +22,12 @@ chrome.extension.sendMessage({}, function (response) {
                 {
                     //Global objects needed by DiceRoller.js
                     //TODO: Rewrite to not require global objects
-                    GLOBAL_WIDGET_OBJECT = { exists: false };
-                    GLOBAL_CHARACTER_OBJECT = { exists: false };
-                    GLOBAL_MONSTER_OBJECT = { exists: false };
+                    GLOBAL_SETTINGS_OBJECT = settings;
+                    GLOBAL_WIDGET_OBJECT = DiceRollerWidget.Initialize(settings);
+                    GLOBAL_CHARACTER_OBJECT = Character.Initialize(settings);
+                    GLOBAL_MONSTER_OBJECT = Monster.Initialize(settings);
 
                     LightboxExtensions.Initialize();
-                    Character.Initialize(settings);
-                    DiceRollerWidget.Initialize(settings);
-
-                    // if(GLOBAL_SETTINGS_OBJECT.DndBeyond_MonstersEnabled === true)
-                    // {
-                    //     if(url.includes(".com/monsters"))
-                    //     {
-                    //         GLOBAL_MONSTER_OBJECT = {
-                    //             exists: true
-                    //         };
-    
-                    //         //TODO: Port C# to JS
-                    //         //From MonsterPage.js
-                    //         //loadMonsterData();
-                    //     }
-                    // }
                 }
 		    });
 		}
