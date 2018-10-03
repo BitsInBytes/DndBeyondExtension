@@ -1,20 +1,34 @@
-"use strict";
-class DiceRollerWidget{
-
-    constructor() {    }
-
-    static LoadWidget()
+class DiceRollerWidget
+{
+    constructor(settings)
     {
-        console.info("creating widget");
+        this.Settings = settings;
 
-        if (GLOBAL_SETTINGS_OBJECT.DndBeyond_DiceRollerWidgetVerticalEnabled === false) {
+        GLOBAL_WIDGET_OBJECT = {
+            exists: true,
+            name: "Dice Roller",
+            icon: chrome.extension.getURL("images/icon48.png")
+        };
+    }
+
+    static Initialize(settings)
+    {
+        if(settings.DndBeyond_DiceRollerWidgetEnabled === true)
+        {
+            (new DiceRollerWidget(settings)).Load();
+        }
+    }
+
+    Load()
+    {
+        if (this.Settings.DndBeyond_DiceRollerWidgetVerticalEnabled === false) {
             var options_width = 485; //Horizontal
         } else { 
             var options_width = 200; //Vertical
         }
     
         //Create widget
-        var dialog = $(`<div id='DiceRollerWidget'>${DiceRollerWidget.getDiceRollerHtml()}</div>`)
+        var dialog = $(`<div id='DiceRollerWidget'>${this.getDiceRollerHtml()}</div>`)
                         .dialog({
                             modal: false,
                             resizable: false,
@@ -81,7 +95,7 @@ class DiceRollerWidget{
             }
         });
     
-        DiceRollerWidget.setUpDiceRollerEvents();
+        this.setUpDiceRollerEvents();
     
         //Allow it to follow scroll
         dialogContainer.style('position', 'fixed', 'important');
@@ -90,7 +104,7 @@ class DiceRollerWidget{
         dialog.dialogExtend('minimize');
     }
 
-    static getDiceRollerHtml() {
+    getDiceRollerHtml() {
         var getDiceRollerDie = (die) => {
             return `
                 <td style="width:33%;">
@@ -142,7 +156,7 @@ class DiceRollerWidget{
             </table>
         `;
 
-        if (GLOBAL_SETTINGS_OBJECT.DndBeyond_DiceRollerWidgetVerticalEnabled === false) {
+        if (this.Settings.DndBeyond_DiceRollerWidgetVerticalEnabled === false) {
             //Horizontal
             return `
             <p>
@@ -193,7 +207,7 @@ class DiceRollerWidget{
         }
     }
 
-    static setUpDiceRollerEvents() {
+    setUpDiceRollerEvents() {
         $("#diceRollerRollButton").click(function () {
             var buildActionContainersFromDiceRoller = () => {
                 var buildActionContainerFromDie = (die) => {

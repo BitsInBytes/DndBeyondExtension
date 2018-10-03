@@ -16,106 +16,41 @@ chrome.extension.sendMessage({}, function (response) {
                 "DndBeyond_DiceRollerWidgetVerticalEnabled",
                 "DndBeyond_BetaCode"], function (data) {
                     
-                defaultSettingsObject(data);
+                var settings = new Settings(data);
 
-                GLOBAL_SETTINGS_OBJECT = data;
-
-                if (GLOBAL_SETTINGS_OBJECT.DndBeyond_Enabled === true)
+                if (settings.DndBeyond_Enabled === true)
                 {
-                    defaultSettingsObject(data);
+                    //Global objects needed by DiceRoller.js
+                    //TODO: Rewrite to not require global objects
+                    GLOBAL_WIDGET_OBJECT = { exists: false };
+                    GLOBAL_CHARACTER_OBJECT = { exists: false };
+                    GLOBAL_MONSTER_OBJECT = { exists: false };
 
-                    //TODO: Object
-                    //From: Lightbox.js
-                    addDownloadButtonToLightbox();
+                    LightboxExtensions.Initialize();
+                    Character.Initialize(settings);
+                    DiceRollerWidget.Initialize(settings);
 
-                    if(GLOBAL_SETTINGS_OBJECT.DndBeyond_DiceRollerWidgetEnabled === true)
-                    {
-                        GLOBAL_WIDGET_OBJECT = {
-                            exists: true,
-                            name: "Dice Roller",
-                            icon: chrome.extension.getURL("images/icon48.png")
-                        };
-
-                        DiceRollerWidget.LoadWidget();
-                    }
-
-                    let url = window.location.href.toLowerCase();
-
-                    if(GLOBAL_SETTINGS_OBJECT.DndBeyond_CharactersEnabled === true)
-                    {
-                        if (url.includes("/profile/") && url.includes("/characters/") && !url.includes("/builder/")) {
-                            GLOBAL_CHARACTER_OBJECT = {
-                                exists: true
-                            };
-
-                            //TODO: Object
-                            //From: CharacterPage.js
-                            loadCharacterData();
-                        }
-                    }
-
-                    if(GLOBAL_SETTINGS_OBJECT.DndBeyond_MonstersEnabled === true)
-                    {
-                        if(url.includes(".com/monsters"))
-                        {
-                            GLOBAL_MONSTER_OBJECT = {
-                                exists: true
-                            };
+                    // if(GLOBAL_SETTINGS_OBJECT.DndBeyond_MonstersEnabled === true)
+                    // {
+                    //     if(url.includes(".com/monsters"))
+                    //     {
+                    //         GLOBAL_MONSTER_OBJECT = {
+                    //             exists: true
+                    //         };
     
-                            //TODO: Port C# to JS
-                            //From MonsterPage.js
-                            //loadMonsterData();
-                        }
-                    }
+                    //         //TODO: Port C# to JS
+                    //         //From MonsterPage.js
+                    //         //loadMonsterData();
+                    //     }
+                    // }
                 }
 		    });
 		}
 	}, 10);
 });
 
-function defaultSettingsObject(data) {
-    //Introduced in 1.0
-    if (data.DndBeyond_Enabled === undefined) {
-        data.DndBeyond_Enabled = true;
-    }
-
-    if (data.DndBeyond_SlackEnabled === undefined) {
-        data.DndBeyond_SlackEnabled = false;
-    }
-
-    if (data.DndBeyond_SlackToken === undefined) {
-        data.DndBeyond_SlackToken = "";
-    }
-
-    if (data.DndBeyond_SlackChannel === undefined) {
-        data.DndBeyond_SlackChannel = "";
-    }
-
-    //Introduced in 1.1
-    if (data.DndBeyond_DiceRollerWidgetEnabled === undefined) {
-        data.DndBeyond_DiceRollerWidgetEnabled = true;
-    }
-    
-    if (data.DndBeyond_MonstersEnabled === undefined) {
-        data.DndBeyond_MonstersEnabled = true;
-    }
-
-    //Introduced in 1.1.2
-    if (data.DndBeyond_DiceRollerWidgetVerticalEnabled === undefined) {
-        data.DndBeyond_DiceRollerWidgetVerticalEnabled = false;
-    }
-
-    //Introduced in 1.2.0
-    if (data.DndBeyond_BetaCode === undefined) {
-        data.DndBeyond_BetaCode = "";
-    }
-
-    //Introduced in 1.3.0
-    if (data.DndBeyond_CharactersEnabled === undefined) {
-        data.DndBeyond_CharactersEnabled = true;
-    }
-}
-
+//TODO: Replace with object invoke
+//Used globally
 function displayError(dataToDisplay) {
     console.error(dataToDisplay);
 

@@ -41,11 +41,12 @@
 						"js/jquery/jquery.waituntilexists.min.js",
 						"js/jquery/jquery.style.js",
 						"js/notifications/notify.min.js",
-						"js/extension/Initialize.js",
-						"js/extension/Lightbox.js",
+						"js/extension/Settings.js",
+						"js/extension/LightboxExtensions.js",
 						"js/extension/DiceRoller.js",
 						"js/extension/DiceRollerWidget.js",
-						"js/extension/CharacterPage.js"
+						"js/extension/Character.js",
+						"js/extension/Initialize.js"
 					],
 				"css": 
 					[
