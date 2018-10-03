@@ -20,43 +20,53 @@ chrome.extension.sendMessage({}, function (response) {
 
                 GLOBAL_SETTINGS_OBJECT = data;
 
-					if (GLOBAL_SETTINGS_OBJECT.DndBeyond_Enabled === true) {
+                if (GLOBAL_SETTINGS_OBJECT.DndBeyond_Enabled === true)
+                {
+                    defaultSettingsObject(data);
 
+                    //TODO: Object
+                    //From: Lightbox.js
+                    addDownloadButtonToLightbox();
 
-						GLOBAL_SERVICE_OBJECT = {
-							exists: true,
-							service_url: "https://localhost:44335/v3"
-						};
+                    if(GLOBAL_SETTINGS_OBJECT.DndBeyond_DiceRollerWidgetEnabled === true)
+                    {
+                        GLOBAL_WIDGET_OBJECT = {
+                            exists: true,
+                            name: "Dice Roller",
+                            icon: chrome.extension.getURL("images/icon48.png")
+                        };
 
-						GLOBAL_WIDGET_OBJECT = {
-							exists: true,
-							name: "Dice Roller",
-							icon: chrome.extension.getURL("images/icon48.png")
-						};
+                        DiceRollerWidget.LoadWidget();
+                    }
 
-						GLOBAL_CHARACTER_OBJECT = {
-							exists: false
-						};
+                    let url = window.location.href.toLowerCase();
 
-						GLOBAL_MONSTER_OBJECT = {
-							exists: false
-						};
+                    if(GLOBAL_SETTINGS_OBJECT.DndBeyond_CharactersEnabled === true)
+                    {
+                        if (url.includes("/profile/") && url.includes("/characters/") && !url.includes("/builder/")) {
+                            GLOBAL_CHARACTER_OBJECT = {
+                                exists: true
+                            };
 
-						GLOBAL_SETTINGS_OBJECT = defaultSettingsObject(data);
+                            //TODO: Object
+                            //From: CharacterPage.js
+                            loadCharacterData();
+                        }
+                    }
 
-						let url = window.location.href.toLowerCase();
-
-						//On character page (but not editing the character)
-						if (url.includes("/profile/") && url.includes("/characters/") && !url.includes("/builder/")) {
-							//loadCharacterData();
-						}
-
-						//createWidget();
-
-						DiceRollerWidget.LoadWidget();
-
-
-
+                    if(GLOBAL_SETTINGS_OBJECT.DndBeyond_MonstersEnabled === true)
+                    {
+                        if(url.includes(".com/monsters"))
+                        {
+                            GLOBAL_MONSTER_OBJECT = {
+                                exists: true
+                            };
+    
+                            //TODO: Port C# to JS
+                            //From MonsterPage.js
+                            //loadMonsterData();
+                        }
+                    }
                 }
 		    });
 		}
@@ -106,51 +116,14 @@ function defaultSettingsObject(data) {
     }
 }
 
-function getServicePayload(loadHtml) {
-    var html = "";
-
-    if (loadHtml) {
-        html = document.documentElement.outerHTML;
-    }
-
-    return {
-        name: $('meta[property="og:title"]').attr('content'),
-        html: html,
-        title: document.title,
-        url: window.location.href,
-        extensionVersion: "1.3.0",
-        browser: getBrowser(),
-        options: {
-            DndBeyond_DiceRollerWidgetEnabled: GLOBAL_SETTINGS_OBJECT.DndBeyond_DiceRollerWidgetEnabled,
-            DndBeyond_MonstersEnabled: GLOBAL_SETTINGS_OBJECT.DndBeyond_MonstersEnabled,
-            DndBeyond_CharactersEnabled: GLOBAL_SETTINGS_OBJECT.DndBeyond_CharactersEnabled,
-            DndBeyond_BetaCode: GLOBAL_SETTINGS_OBJECT.DndBeyond_BetaCode
-        }
-    };
-}
-
 function displayError(dataToDisplay) {
     console.error(dataToDisplay);
 
     $.notify(dataToDisplay, { position: "top right", className: "error" });
 }
 
-function getBrowser() {
-    var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+function displaySuccess(dataToDisplay) {
+    console.info(dataToDisplay);
 
-    if (/trident/i.test(M[1])) {
-        tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-        return 'IE ' + (tem[1] || '');
-    }
-
-    if (M[1] === 'Chrome') {
-        tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-        if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-    }
-
-    M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-
-    if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
-
-    return M[0];
+    $.notify(dataToDisplay, { globalPosition: "top right", className: "success" });
 }

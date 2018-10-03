@@ -39,9 +39,13 @@
 						"js/jquery/jquery-ui.min.js",
 						"js/jquery/jquery.dialogextend.min.js",
 						"js/jquery/jquery.waituntilexists.min.js",
+						"js/jquery/jquery.style.js",
 						"js/notifications/notify.min.js",
 						"js/extension/Initialize.js",
-						"js/extension/DiceRollerWidget.js"
+						"js/extension/Lightbox.js",
+						"js/extension/DiceRoller.js",
+						"js/extension/DiceRollerWidget.js",
+						"js/extension/CharacterPage.js"
 					],
 				"css": 
 					[

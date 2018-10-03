@@ -1,6 +1,5 @@
+"use strict";
 class DiceRollerWidget{
-
-	"use strict";
 
     constructor() {    }
 
