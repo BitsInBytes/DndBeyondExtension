@@ -46,7 +46,9 @@
 						"js/extension/DiceRoller.js",
 						"js/extension/DiceRollerWidget.js",
 						"js/extension/Character.js",
-						"js/extension/Monster.js",
+						"js/extension/monster/Ability.js",
+						"js/extension/monster/Skill.js",
+						"js/extension/monster/Monster.js",
 						"js/extension/Initialize.js"
 					],
 				"css": 
