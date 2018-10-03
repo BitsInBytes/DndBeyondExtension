@@ -41,6 +41,7 @@
 						"js/jquery/jquery.waituntilexists.min.js",
 						"js/jquery/jquery.style.js",
 						"js/notifications/notify.min.js",
+						"js/extension/UIObject.js",
 						"js/extension/Settings.js",
 						"js/extension/LightboxExtensions.js",
 						"js/extension/DiceRoller.js",
@@ -48,7 +49,10 @@
 						"js/extension/Character.js",
 						"js/extension/monster/Ability.js",
 						"js/extension/monster/Skill.js",
+						"js/extension/monster/Action.js",
 						"js/extension/monster/Monster.js",
+						"js/extension/monster/Roll.js",
+						"js/extension/monster/CombatRollContainer.js",
 						"js/extension/Initialize.js"
 					],
 				"css": 
