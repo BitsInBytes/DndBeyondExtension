@@ -26,4 +26,9 @@ class Ability
 
 		return abilities;
 	}
+
+	static GetAbility(abilities, name)
+	{
+		return abilities.filter(function(item){ return item.Name === name; })[0];
+	}
 }

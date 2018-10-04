@@ -23,7 +23,7 @@ class Monster
 				var monster = new Monster(settings);
 
 				this.Abilities = Ability.BuildAll();
-				this.Skills = Skill.BuildAll();
+				this.Skills = Skill.BuildAll(this.Abilities);
 				this.Actions = Action.BuildAll();
 
 				return monster;
