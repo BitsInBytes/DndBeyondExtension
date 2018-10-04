@@ -124,26 +124,45 @@ class Action
 		var attackRoll = this.CombatRollContainer.AttackRoll;
 		var damageRoll = this.CombatRollContainer.DamageRoll;
 
-		var mainAction =
+		if(attackRoll === null)
 		{
-			Title: this.Name,
-			MainRoll: {
-				Description: attackRoll.Description,
-				Dice: attackRoll.NumberOfDice,
-				Sides: attackRoll.DieSides,
-				Modifier: attackRoll.Modifier,
-				LinkedRolls: []
-			}
-		};
-
-		mainAction.MainRoll.LinkedRolls.push({
-			Description: damageRoll.Description,
-			Dice: damageRoll.NumberOfDice,
-			Sides: damageRoll.DieSides,
-			Modifier: damageRoll.Modifier
-		});
-
-		ExecuteActions([mainAction]);
+			var mainAction =
+			{
+				Title: this.Name,
+				MainRoll: {
+					Description: damageRoll.Description,
+					Dice: damageRoll.NumberOfDice,
+					Sides: damageRoll.DieSides,
+					Modifier: damageRoll.Modifier,
+					LinkedRolls: []
+				}
+			};
+	
+			ExecuteActions([mainAction]);
+		}
+		else
+		{
+			var mainAction =
+			{
+				Title: this.Name,
+				MainRoll: {
+					Description: attackRoll.Description,
+					Dice: attackRoll.NumberOfDice,
+					Sides: attackRoll.DieSides,
+					Modifier: attackRoll.Modifier,
+					LinkedRolls: []
+				}
+			};
+	
+			mainAction.MainRoll.LinkedRolls.push({
+				Description: damageRoll.Description,
+				Dice: damageRoll.NumberOfDice,
+				Sides: damageRoll.DieSides,
+				Modifier: damageRoll.Modifier
+			});
+	
+			ExecuteActions([mainAction]);
+		}
 	}
 
 	static BuildAll()
@@ -152,7 +171,7 @@ class Action
 
 		$('.mon-stat-block__description-block').each(function()
 		{
-			if($(this).find('.mon-stat-block__description-block-heading').text().toLowerCase() == 'actions')
+			//if($(this).find('.mon-stat-block__description-block-heading').text().toLowerCase() == 'actions')
 			{
 				$(this).find('.mon-stat-block__description-block-content').find('p').each(function()
 				{

@@ -26,11 +26,28 @@ class Skill
 		var idName = `extension_skill_${this.Name.split(' ').join('')}`;
 
 		$(`#extension_monster_skills_${this.Ability.Name}`).append(`<span id="${idName}">${this.Name}</span>, `);
-
+		
+		var skill = this;
 		this.AddClickToRollToElement($(`#${idName}`), function() { 
-			alert('test');
-			//uiObject.ExecuteCombatRollContainer();
+			skill.ExecuteSkillCheckRoll();
 		});
+	}
+
+	ExecuteSkillCheckRoll()
+	{
+		var mainAction =
+		{
+			Title: this.Name,
+			MainRoll: {
+				Description: "Skill Check",
+				Dice: 1,
+				Sides: 20,
+				Modifier: this.Modifier,
+				LinkedRolls: []
+			}
+		};
+
+		ExecuteActions([mainAction]);
 	}
 
 	static BuildStub(name, ability)
@@ -93,30 +110,34 @@ class Skill
 					});
 				});
 
-				skillsBlock.html(``);
+				var currentHtml = skillsBlock.html();
 				skillsBlock.removeClass('mon-stat-block__tidbit');
+				skillsBlock.html('');
 
-				abilities.forEach(function(item)
+				/*
+					There are actually no con skills
+					As well, wisdom has so many skills, we place it last as it looks the best
+				*/
+				var filteredAbilities = abilities.filter(item => item.Name !== "CON" && item.Name !== "WIS");
+				filteredAbilities.push(abilities.filter(item => item.Name === "WIS")[0]);
+
+				filteredAbilities.forEach(function(item)
 				{
-					//There are actually no con skills
-					if(item.Name !== "CON")
-					{
-						skillsBlock.append
-						(
-							`
-								<div class="mon-stat-block__tidbit">
-									<span class="mon-stat-block__tidbit-label">${item.Name}</span>
-									<span id="extension_monster_skills_${item.Name}" class="mon-stat-block__tidbit-data" />
-								</div>
-							`
-						);
-					}
+					skillsBlock.append
+					(`
+						<div class="mon-stat-block__tidbit">
+							<span class="mon-stat-block__tidbit-label">${item.Name}</span>
+							<span id="extension_monster_skills_${item.Name}" class="mon-stat-block__tidbit-data" />
+						</div>
+					`);
 				});
 
 				skills.forEach(function(item)
 				{
 					item.InjectIntoDom();
 				});
+
+				skillsBlock.append(currentHtml);
 			}
 		});
 

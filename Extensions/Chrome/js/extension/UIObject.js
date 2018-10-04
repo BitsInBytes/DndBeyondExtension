@@ -4,10 +4,10 @@
 class UIObject
 {
 	AddClickToRollToElement(element, clickCallBack) {
-		element.css('cursor', "pointer");
-		element.css('color', "DarkRed");
-		element.css('font-weight', "boldest");
-		element.css('text-decoration', "underline");
+		element.style('cursor', "pointer", 'important');
+		element.style('color', 'DarkBlue', 'important');
+		element.style('font-weight', "boldest", 'important');
+		element.style('text-decoration', "underline", 'important');
 		element.attr('title', "Click to roll");
 		element.click(clickCallBack);
 	}

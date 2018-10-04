@@ -13,6 +13,32 @@ class Ability
 		this.Name = name;
 		this.Total = total;
 		this.Modifier = modifier;
+		this.Element = element;
+	}
+
+	InjectIntoDom()
+	{
+		var ability = this;
+		this.AddClickToRollToElement(this.Element.find('.ability-block__heading'), function() { 
+			ability.ExecuteSkillCheckRoll();
+		});
+	}
+
+	ExecuteSkillCheckRoll()
+	{
+		var mainAction =
+		{
+			Title: this.Name,
+			MainRoll: {
+				Description: "Ability Check",
+				Dice: 1,
+				Sides: 20,
+				Modifier: this.Modifier,
+				LinkedRolls: []
+			}
+		};
+
+		ExecuteActions([mainAction]);
 	}
 	
 	static BuildAll()
@@ -21,7 +47,10 @@ class Ability
 		
 		$('.ability-block__stat').each(function()
 		{
-			abilities.push(new Ability($(this)));
+			var ability = new Ability($(this));
+			ability.InjectIntoDom();
+
+			abilities.push(ability);
 		});
 
 		return abilities;
