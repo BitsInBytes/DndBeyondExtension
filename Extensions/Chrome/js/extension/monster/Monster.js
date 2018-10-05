@@ -22,14 +22,34 @@ class Monster
 			{
 				var monster = new Monster(settings);
 
-				this.Abilities = Ability.BuildAll();
-				this.Skills = Skill.BuildAll(this.Abilities);
-				this.Actions = Action.BuildAll();
+				monster.Abilities = Ability.BuildAll();
+				monster.Skills = Skill.BuildAll(monster.Abilities);
+				monster.Actions = Action.BuildAll();
+
+				monster.MakeMatchingNamesRollable();
 
 				return monster;
 			}
 		}
 
 		return { Exists: false };
+	}
+
+	MakeMatchingNamesRollable()
+	{
+		var self = this;
+
+		$('.mon-stat-block__description-block').each(function()
+		{
+			var blockElement = $(this);
+
+			self.Skills.forEach(function(skill) {
+				skill.HookElementHtml(blockElement);
+			});
+
+			self.Actions.filter(item => item.Rollable === true).forEach(function(action) {
+				skill.HookElementHtml(blockElement);
+			});
+		});
 	}
 }

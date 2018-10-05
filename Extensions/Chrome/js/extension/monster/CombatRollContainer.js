@@ -1,8 +1,8 @@
 class CombatRollContainer
 {
-	constructor(attackRoll, damageRoll)
+	constructor(attackRoll, damageRolls)
 	{
 		this.AttackRoll = attackRoll;
-		this.DamageRoll = damageRoll;
+		this.DamageRolls = damageRolls;
 	}
 }
