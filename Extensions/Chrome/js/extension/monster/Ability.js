@@ -14,6 +14,28 @@ class Ability
 		this.Total = total;
 		this.Modifier = modifier;
 		this.Element = element;
+
+		//Only the short hand name exists within the DOM, so we will have to hard code this:
+		switch(this.Name) {
+			case "STR":
+				this.Description = "Strength"
+				break;
+			case "DEX":
+				this.Description = "Dexterity"
+				break;
+			case "CON":
+				this.Description = "Constitution"
+				break;
+			case "INT":
+				this.Description = "Intelligence"
+				break;
+			case "WIS":
+				this.Description = "Wisdom"
+				break;
+			case "CHA":
+				this.Description = "Charisma"
+				break;
+		}
 	}
 
 	InjectIntoDom()

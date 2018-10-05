@@ -14,22 +14,55 @@ class Skill
 
 	OverrideAbilityModifier(element)
 	{
-		var name = element.find('.skill-tooltip').text();
-		var modifier = parseInt(element.text().replace(name, '').replace('+','').trim());
-		
-		this.Element = element;
-		this.Modifier = modifier;
+		var skill = this;
+		var skills = element.text().trim().split(', ');
+	
+		skills.forEach(function(item)
+		{
+			var skillParts = item.split(' ');
+
+			if(skillParts[0] === skill.Name)
+			{
+				var modifier = parseInt(skillParts[1].replace('+','').trim());
+				skill.Modifier = modifier;
+			}
+		});
 	}
 
 	InjectIntoDom()
 	{
-		var idName = `extension_skill_${this.Name.split(' ').join('')}`;
+		this.Id = this.NewGuid();
 
-		$(`#extension_monster_skills_${this.Ability.Name}`).append(`<span id="${idName}">${this.Name}</span>, `);
+		$(`#extension_monster_skills_${this.Ability.Name}`).append(`<span id="${this.Id}">${this.Name}</span>, `);
 		
 		var skill = this;
-		this.AddClickToRollToElement($(`#${idName}`), function() { 
+		this.AddClickToRollToElement($(`#${this.Id}`), function() { 
 			skill.ExecuteSkillCheckRoll();
+		});
+
+		this.Element = $(`#${this.Id}`);
+	}
+
+	HookElementHtml(element)
+	{
+		var skill = this;
+
+		//Inject the span into all linked skill text
+		element.find('a').each(function() {
+			if($(this).text() === skill.Name)
+			{
+				$(this).click(function(e) {
+					e.preventDefault();
+				});
+
+				var id = skill.NewGuid();
+
+				$(this).html(`<span class="${id}">${skill.Name}</span>`);
+
+				skill.AddClickToRollToElement($(`.${id}`), function() { 
+					skill.ExecuteSkillCheckRoll();
+				});
+			}
 		});
 	}
 
@@ -98,15 +131,11 @@ class Skill
 			{
 				$(this).find('.mon-stat-block__tidbit-data').each(function()
 				{
-					var skillName = $(this).find('.skill-tooltip').text();
-					var skillDom = $(this);
+					var skillsDom = $(this);
 
 					skills.forEach(function(item)
 					{
-						if(item.Name === skillName)
-						{
-							item.OverrideAbilityModifier(skillDom);
-						}
+						item.OverrideAbilityModifier(skillsDom);
 					});
 				});
 
