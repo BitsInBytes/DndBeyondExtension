@@ -1,8 +1,11 @@
 class DamageRoll
+	extends UniqueObject
 {
-	constructor(damageRolls, savingThrows)
+	constructor(rolls, savingThrows)
 	{
-		this.DamageRolls = damageRolls;
+		super();
+		
+		this.Rolls = rolls;
 		this.SavingThrows = savingThrows;
 	}
 }

@@ -5,8 +5,10 @@
         this.Settings = settings;
     }
     
-    DisplayMonsterResult(actions, html) {
-        if (this.Settings.DndBeyond_SlackEnabled) {
+    DisplayMonsterResult(actions, html)
+    {
+        if (this.Settings.DndBeyond_SlackEnabled)
+        {
             var slackMarkUp = html.replaceAll("<strong>", "*");
             slackMarkUp = slackMarkUp.replaceAll("</strong>", "*");
             slackMarkUp = slackMarkUp.replaceAll("</i>", "_");
@@ -20,15 +22,18 @@
             var name = "N/A";
             var icon = "";
     
-            if (GLOBAL_CHARACTER_OBJECT.Exists) {
+            if (GLOBAL_CHARACTER_OBJECT.Exists)
+            {
                 name = GLOBAL_CHARACTER_OBJECT.Name;
                 icon = GLOBAL_CHARACTER_OBJECT.Icon;
             }
-            else if (GLOBAL_MONSTER_OBJECT.Exists) {
+            else if (GLOBAL_MONSTER_OBJECT.Exists)
+            {
                 name = GLOBAL_MONSTER_OBJECT.Name;
                 icon = GLOBAL_MONSTER_OBJECT.Icon;
             }
-            else if (GLOBAL_WIDGET_OBJECT.Exists) {
+            else if (GLOBAL_WIDGET_OBJECT.Exists)
+            {
                 name = GLOBAL_WIDGET_OBJECT.Name;
                 icon = GLOBAL_WIDGET_OBJECT.Icon;
             }
@@ -114,7 +119,8 @@
         }
     }
     
-    ExecuteActions(actions) {
+    ExecuteActions(actions)
+    {
         var html = "";
         for (var i = 0, len = actions.length; i < len; i++) {
             if (html) {
@@ -127,7 +133,8 @@
         this.DisplayMonsterResult(actions, html);
     }
     
-    ExecuteAction(action) {
+    ExecuteAction(action)
+    {
         var returnValue = "<strong><i>" + action.Title + "</i></strong><br />";
         var expression = "";
         var status = "";
@@ -175,7 +182,8 @@
         return returnValue;
     }
     
-    RollDice(roll, isPartOfChain) {
+    RollDice(roll, isPartOfChain)
+    {
         var rolls = "";
         var totalValue = 0;
         var status = "";
@@ -232,7 +240,8 @@
         };
     }
     
-    BuildExpression(exp, value) {
+    BuildExpression(exp, value)
+    {
         if (exp) {
             exp = exp + " | " + value;
         } else {
@@ -242,7 +251,8 @@
         return exp;
     }
     
-    FormatNumber(num) {
+    FormatNumber(num)
+    {
         if (num) {
             if (num >= 0) {
                 return "+ " + num;

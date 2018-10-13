@@ -31,8 +31,6 @@ class Skill
 
 	InjectIntoDom()
 	{
-		this.Id = this.NewGuid();
-
 		$(`#extension_monster_skills_${this.Ability.Name}`).append(`<span id="${this.Id}">${this.Name}</span>, `);
 		
 		var skill = this;
