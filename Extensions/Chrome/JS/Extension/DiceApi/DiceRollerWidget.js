@@ -67,9 +67,9 @@ class DiceRollerWidget
         titleBar.html(`<span id="ui-id-2" class="ui-dialog-title" style="float: left; margin-top:2px;"><img src="${chrome.extension.getURL("images/icon48.png")}" width="20" height="20" style="margin-bottom:5px; margin-left: 5px;" alt="D&amp;D Beyond Interaction" title="D&amp;D Beyond Interaction"/>  Dice Roller</span>`);
     
         //Header images
-        var closeImage = `<img src="${chrome.extension.getURL("images/close_icon.png")}" width="15" height="15" alt="X" title="Close"/>`;
-        var restoreImage = `<img src="${chrome.extension.getURL("images/restore_icon.png")}" width="15" height="15" alt="[]" title="Restore"/>`;
-        var minimizeImage = `<img src="${chrome.extension.getURL("images/minimize_icon.png")}" width="15" height="15" alt="_" title="Minimize"/>`;
+        var closeImage = `<img src="${chrome.extension.getURL("images/closeicon.png")}" width="15" height="15" alt="X" title="Close"/>`;
+        var restoreImage = `<img src="${chrome.extension.getURL("images/restoreicon.png")}" width="15" height="15" alt="[]" title="Restore"/>`;
+        var minimizeImage = `<img src="${chrome.extension.getURL("images/minimizeicon.png")}" width="15" height="15" alt="_" title="Minimize"/>`;
     
         //Create header buttons
         dialogContainer.find(".ui-dialog-titlebar").append(`<button type="button" class="widget-close-button ui-button ui-corner-all ui-widget ui-button-icon-only" title="Close" style="background-color: #bf3333; padding:4px; float: right; margin-top:4px; margin-right: 5px;">${closeImage}</button>`);

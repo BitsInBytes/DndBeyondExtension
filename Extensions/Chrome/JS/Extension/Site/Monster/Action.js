@@ -1,4 +1,43 @@
 /*
+
+//Title
+^[a-zA-z0-9\s\(\)\-\–]{1,}\.
+
+//To hit
+(?:\+|\-)\d{1,}\sto\shit
+
+//Range
+reach\s\d{1,}\sft
+
+//Split (OR)
+\s\w{1,}\sdamage, or 
+
+//Damage rolls
+\(\d{1,}d\d{1,}(?:\s(?:\+|\-)\s\d\)|\))\s\w{1,}\sdamage
+
+//Non damage rolls
+\s\d{1,}d\d{1,}\s
+
+//Saving throws
+\sDC\s\d{1,}\s\w{1,}\ssaving\sthrow
+
+//Recharge
+\(recharge\s(?:\d\S\d|\d)\)
+
+
+split title from body
+	find recharge in title
+split to hit from body
+split reach (if any)
+split (OR) in body(s)
+
+each body
+	damage rolls
+	saving throws
+	
+	
+non damage rolls
+
 	Comments are for example action description: 'Talon. Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.'
 */
 class Action
@@ -27,10 +66,10 @@ class Action
 			this.Name = name.replace('.','');
 			//Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.
 			this.Description = element.text().toLowerCase().replace(this.Name.toLowerCase(), '').trim();
-			this.CombatRollContainer = this.BuildCombatRollContainer();
+			this.RollContainer = this.BuildRollContainer();
 			this.Rollable = false;
 
-			if(this.CombatRollContainer.DamageRolls !== null)
+			if(this.RollContainer.DamageRolls !== null)
 			{
 				this.Rollable = true;
 				this.InjectClickToRollIntoDom();
@@ -38,14 +77,14 @@ class Action
 		}
 	}
 
-	BuildCombatRollContainer()
+	BuildRollContainer()
 	{
 		//1D20+4 to hit
 		var attackRoll = this.BuildAttackRoll();
 		//1D4+2 slashing damage
 		var damageRolls = this.BuildDamageRolls();
 
-		return new CombatRollContainer(attackRoll, damageRolls);
+		return new RollContainer(attackRoll, damageRolls);
 	}
 
 	BuildAttackRoll()
@@ -169,10 +208,10 @@ class Action
 		return roll;
 	}
 
-	ExecuteCombatRollContainer()
+	ExecuteRollContainer()
 	{
-		var attackRoll = this.CombatRollContainer.AttackRoll;
-		var damageRolls = this.CombatRollContainer.DamageRolls;
+		var attackRoll = this.RollContainer.AttackRoll;
+		var damageRolls = this.RollContainer.DamageRolls;
 		var mainAction = {};
 
 		if(attackRoll === null)
@@ -221,10 +260,10 @@ class Action
 		var action = this;
 		
 		this.AddClickToRollToElement(this.Element.find('.action_title'), function() { 
-			action.ExecuteCombatRollContainer();
+			action.ExecuteRollContainer();
 		});
 
-		this.CombatRollContainer.DamageRolls.forEach(function(roll)
+		this.RollContainer.DamageRolls.forEach(function(roll)
 		{
 			action.AddClickToRollToElement($(`.${roll.Id}`), function() { 
 				ExecuteActions([{

@@ -12,12 +12,12 @@
 			"128": "images/icon128.png",
 			"512": "images/icon512.png"
 		},
-	"options_page": "options_index.html",
+	"options_page": "OptionsIndex.html",
 	"browser_action": 
 		{
 			"default_icon": "images/icon19.png",
 			"default_title": "D&D Beyond Interaction",
-			"default_popup": "browser_action.html"
+			"default_popup": "BrowserAction.html"
 		},
 	"permissions": 
 		[
@@ -40,19 +40,28 @@
 						"js/jquery/jquery.dialogextend.min.js",
 						"js/jquery/jquery.waituntilexists.min.js",
 						"js/jquery/jquery.style.js",
-						"js/notifications/notify.min.js",
-						"js/extension/UIObject.js",
-						"js/extension/Settings.js",
-						"js/extension/LightboxExtensions.js",
+						"js/jquery/jquery.notify.min.js",
+
+						"js/extension/core/prototypeExtensions/StringExtensions.js",
+						"js/extension/core/UIObject.js",
+						"js/extension/core/Settings.js",
+
 						"js/extension/DiceRoller.js",
-						"js/extension/DiceRollerWidget.js",
-						"js/extension/Character.js",
-						"js/extension/monster/Ability.js",
-						"js/extension/monster/Skill.js",
-						"js/extension/monster/Action.js",
-						"js/extension/monster/Monster.js",
-						"js/extension/monster/Roll.js",
-						"js/extension/monster/CombatRollContainer.js",
+						
+						"js/extension/diceApi/Roll.js",
+						"js/extension/diceApi/DamageRoll.js",
+						"js/extension/diceApi/SavingThrow.js",
+						"js/extension/diceApi/AttackRoll.js",
+						"js/extension/diceApi/DiceRoller.js",
+						"js/extension/diceApi/DiceRollerWidget.js",
+
+						"js/extension/site/LightboxExtensions.js",
+						"js/extension/site/character/Character.js",
+						"js/extension/site/monster/Ability.js",
+						"js/extension/site/monster/Skill.js",
+						"js/extension/site/monster/Action.js",
+						"js/extension/site/monster/Monster.js",
+
 						"js/extension/Initialize.js"
 					],
 				"css": 
@@ -75,8 +84,8 @@
 			"images/icon128.png",
 			"images/icon512.png",
 
-			"images/close_icon.png",
-			"images/minimize_icon.png",
-			"images/restore_icon.png"
+			"images/closeicon.png",
+			"images/minimizeicon.png",
+			"images/restoreicon.png"
 		]
 }

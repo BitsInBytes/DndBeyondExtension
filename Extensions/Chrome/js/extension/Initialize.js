@@ -47,8 +47,3 @@ function displaySuccess(dataToDisplay) {
 
     $.notify(dataToDisplay, { globalPosition: "top right", className: "success" });
 }
-
-String.prototype.replaceAll = function(searchMask, replaceMask) {
-    var regEx = new RegExp(searchMask, "ig");
-    return this.replace(regEx, replaceMask);
-};
