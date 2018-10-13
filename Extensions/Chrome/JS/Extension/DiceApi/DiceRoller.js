@@ -4,8 +4,114 @@
 	{
         this.Settings = settings;
     }
+
+    ExecuteAttackRoll(originalAttackRoll)
+    {
+        /*
+            We need to deep clone all the objects because 'crits' double the dice count.
+            If we double the objects dice, its doubled forever without cloning due to object reference.
+        */
+        var attackRoll = originalAttackRoll.Clone();
+
+        attackRoll.HitRoll.Execute();
+
+        attackRoll.DamageRolls.forEach(damageRoll =>
+        {
+            damageRoll.Rolls.forEach(roll => {
+                roll.Execute(attackRoll.HitRoll.Result);
+            });
+        });
+
+        attackRoll.EffectRolls.forEach(effectRoll =>
+        {
+            effectRoll.Execute();
+        });
+
+        return attackRoll;
+    }
+
+    PublishExecutedAttackRoll(attackRoll)
+    {
+        if(this.Settings.DndBeyond_SlackEnabled)
+        {
+            //Nothing for now
+        }
+
+        this.DisplayExecutedAttackRoll(attackRoll);
+    }
     
-    DisplayMonsterResult(actions, html)
+    DisplayExecutedAttackRoll(attackRoll)
+    {
+        var html = `<strong><i>${attackRoll.Title.toTitleCase()}</i></strong>`;
+
+        html = `${html}<br /><br />${this.GetRollResultHtml(attackRoll.HitRoll.Result)}`;
+        html = `${html}<br /><strong>Damage</strong><br />`;
+
+        var damageHtml = ``;
+        attackRoll.DamageRolls.forEach(damageRoll => {
+            if(damageHtml !== ``)
+            {
+                damageHtml = `${damageHtml}<br /><strong>Or</strong><br />`;
+            }
+            damageHtml = `${damageHtml}<br />`;
+            
+            damageRoll.Rolls.forEach(roll => {
+                damageHtml = `${damageHtml}${this.GetRollResultHtml(roll.Result)}`;
+            })
+
+            damageHtml = `${damageHtml}${this.GetRollGroupTotalHtml(damageRoll.Rolls)}`;
+        });
+        
+        html = `${html}${damageHtml}`;
+
+        if(attackRoll.EffectRolls !== null)
+        {
+            html = `${html}<br /><strong>Additional Effects</strong><br /><br />`;
+
+            attackRoll.EffectRolls.forEach(roll => {
+                html = `${html}${this.GetRollResultHtml(roll.Result)}`;
+            })
+        }
+
+        this.PopUp(html);
+    }
+
+    GetRollResultHtml(result)
+    {
+        var lineStart = `<span style="background-color:aqua; padding-right:3px; margin-right:5px;" />`;
+
+        var valueDescription = `<strong>${result.Status}${result.TotalValue}</strong>`;
+        var rolledValues = ` ... <i>(${result.ToString()})</i>`
+        var savingThrow = ``;
+        var reachText = ``;
+
+        if(result.Roll.SavingThrow !== null)
+        {
+            savingThrow = `${lineStart.replace('aqua','yellow')}<strong>${result.Roll.SavingThrow.ToString()}</strong><br />`;
+        }
+
+        if(result.Roll.Reach !== null)
+        {
+            reachText = ` <i>(${result.Roll.Reach} Feet)</i>`;
+        }
+
+        return `${lineStart}${valueDescription} ${result.Roll.Description.toTitleCase()}${reachText}${rolledValues}<br />${savingThrow}`;
+    }
+
+    GetRollGroupTotalHtml(rolls)
+    {
+        var total = 0;
+        rolls.forEach(roll => {
+            total = total + roll.Result.TotalValue;
+        })
+
+        var lineStart = `<span style="background-color:#01FF70; padding-right:3px; margin-right:5px;" />`;
+        var valueDescription = `<strong>${total} Total</strong>`;
+
+        return `${lineStart}${valueDescription}<br />`;
+    }
+
+    PopUp(html)
     {
         if (this.Settings.DndBeyond_SlackEnabled)
         {
@@ -87,7 +193,7 @@
     
                     $('.DiceRollResultsRollAgainButton').bind('click', function () {
                         popup.dialog('close');
-                        this.ExecuteActions(actions);
+                        //this.ExecuteActions(actions);
                     });
                 },
             };
@@ -117,150 +223,5 @@
                 dialog.dialog('close');
             });
         }
-    }
-    
-    ExecuteActions(actions)
-    {
-        var html = "";
-        for (var i = 0, len = actions.length; i < len; i++) {
-            if (html) {
-                html = html + "<br />" + this.ExecuteAction(actions[i]);
-            } else {
-                html = html + this.ExecuteAction(actions[i]);
-            }
-        }
-    
-        this.DisplayMonsterResult(actions, html);
-    }
-    
-    ExecuteAction(action)
-    {
-        var returnValue = "<strong><i>" + action.Title + "</i></strong><br />";
-        var expression = "";
-        var status = "";
-    
-        if (typeof action.MainRoll != 'undefined') {
-            if (action.MainRoll.Dice > 0) {
-                var rolledDice = this.RollDice(action.MainRoll, true);
-    
-                expression = this.BuildExpression(expression, rolledDice.Expression);
-                returnValue = returnValue + rolledDice.Html;
-                status = rolledDice.Status;
-            }
-        }
-    
-        if (typeof action.MainRoll.LinkedRolls != 'undefined') {
-            var totalValue = 0;
-    
-            //Go through the multiple expression actions
-            for (var i = 0, len = action.MainRoll.LinkedRolls.length; i < len; i++) {
-                if (status == "Crit! ~ ") {
-                    action.MainRoll.LinkedRolls[i].Dice = action.MainRoll.LinkedRolls[i].Dice * 2;
-                }
-    
-                var rolledDice = this.RollDice(action.MainRoll.LinkedRolls[i], action.MainRoll.LinkedRolls.length > 1);
-    
-                //Reset - shared instance on char sheet
-                if (status == "Crit! ~ ") {
-                    action.MainRoll.LinkedRolls[i].Dice = action.MainRoll.LinkedRolls[i].Dice / 2;
-                }
-    
-                expression = this.BuildExpression(expression, rolledDice.Expression);
-                returnValue = returnValue + rolledDice.Html;
-                totalValue = totalValue + rolledDice.TotalValue;
-            }
-    
-            if (action.MainRoll.LinkedRolls.length > 1 && totalValue > 0) {
-                returnValue = returnValue + "<br /><span style=\"background-color:#01FF70; padding-right:3px; margin-right:10px;\" /><strong>" + totalValue + " Total</strong><br />";
-            }
-        }
-    
-        if (expression) {
-            returnValue = returnValue + "<br />" + "<span style=\"background-color:Honeydew; color:deeppink; font-size: 80%;\">" + expression + "</span><br />";
-        }
-    
-        return returnValue;
-    }
-    
-    RollDice(roll, isPartOfChain)
-    {
-        var rolls = "";
-        var totalValue = 0;
-        var status = "";
-        var savingThrowText = "";
-    
-        //Roll the n amount of Dice
-        for (var d = 0; d < roll.Dice; d++) {
-            var value = Math.floor(Math.random() * roll.Sides) + 1;
-    
-            if (roll.Sides == 20 && roll.Dice == 1) {
-                if (value == 1) {
-                    status = "Fail! ~ ";
-                } else if (value == 20) {
-                    status = "Crit! ~ ";
-                }
-            }
-    
-            if (rolls) {
-                rolls = rolls + "," + value;
-            } else {
-                rolls = value;
-            }
-    
-            totalValue = totalValue + value;
-        }
-    
-        if (roll.SavingThrow) {
-            savingThrowText = "<span style=\"background-color:Aqua; padding-right:3px; margin-right:10px;\" /><strong>" + roll.SavingThrow + "</strong><br />";
-        }
-    
-        //No dice, just saving throw
-        if (typeof roll.DiceFound != 'undefined') {
-            return {
-                Html: "<br />" + savingThrowText,
-                Expression: "",
-                Status: ""
-            };
-        }
-    
-        //Finalize data
-        rolls = rolls + " " + this.FormatNumber(roll.Modifier);
-        totalValue = totalValue + roll.Modifier;
-    
-        var color = "#01FF70";
-        if (isPartOfChain) {
-            color = "Aqua";
-        }
-    
-        return {
-            Html: "<br /><span style=\"background-color:" + color + "; padding-right:3px; margin-right:10px;\" /><strong>" + status + totalValue + "</strong> " + ToTitleCase(roll.Description) + " ... <i>(" + rolls + ")</i><br />" + savingThrowText,
-            Expression: roll.Dice + "d" + roll.Sides + " " + this.FormatNumber(roll.Modifier),
-            Status: status,
-            TotalValue: totalValue
-        };
-    }
-    
-    BuildExpression(exp, value)
-    {
-        if (exp) {
-            exp = exp + " | " + value;
-        } else {
-            exp = value;
-        }
-    
-        return exp;
-    }
-    
-    FormatNumber(num)
-    {
-        if (num) {
-            if (num >= 0) {
-                return "+ " + num;
-            } else {
-                return num;
-            }
-        }
-    
-        return "";
     }
 }

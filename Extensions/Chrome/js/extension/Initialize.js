@@ -18,6 +18,32 @@ chrome.extension.sendMessage({}, function (response) {
                     
                 var settings = new Settings(data);
 
+                var dr = new DiceRoller(settings);
+
+var roll = new Roll(1,4,1,"first");
+roll.AddSavingThrow(new SavingThrow(20, "wis"));
+
+var hit = new Roll(1,20,5,"desc");
+hit.AddReach(5);
+var attackRoll =       new AttackRoll(
+    "title",
+    hit,
+    [
+        new DamageRoll(
+            [roll,new Roll(2,8,2,"second")]
+        ),
+        new DamageRoll(
+            [new Roll(1,4,1,"third"),new Roll(2,8,2,"fourth")]
+        )
+    ],
+    [new Roll(1,4,0,"days"),new Roll(1,12,0,"hours")]
+    );
+
+                var executedRoll = dr.ExecuteAttackRoll(attackRoll);
+
+                dr.PublishExecutedAttackRoll(executedRoll);
+
+return;
                 if (settings.DndBeyond_Enabled === true)
                 {
                     //Global objects needed by DiceRoller.js

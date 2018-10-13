@@ -1,7 +1,7 @@
 /*
 	Anything that inherits from this will have a unique Id in memory
 */
-class UIObject
+class UniqueObject
 {
     constructor()
     {
