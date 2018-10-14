@@ -50,10 +50,12 @@
 						"js/extension/DiceRoller.js",
 						
 						"js/extension/diceApi/Roll.js",
-						"js/extension/diceApi/RollResult.js",
 						"js/extension/diceApi/DamageRoll.js",
+						"js/extension/diceApi/HitRoll.js",
+						"js/extension/diceApi/RollResult.js",
+						"js/extension/diceApi/DamageContainer.js",
 						"js/extension/diceApi/SavingThrow.js",
-						"js/extension/diceApi/AttackRoll.js",
+						"js/extension/diceApi/AttackContainer.js",
 						"js/extension/diceApi/DiceRoller.js",
 						"js/extension/diceApi/DiceRollerWidget.js",
 

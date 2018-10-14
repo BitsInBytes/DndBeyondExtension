@@ -15,9 +15,9 @@
 
         attackRoll.HitRoll.Execute();
 
-        attackRoll.DamageRolls.forEach(damageRoll =>
+        attackRoll.DamageContainers.forEach(damageContainer =>
         {
-            damageRoll.Rolls.forEach(roll => {
+            damageContainer.DamageRolls.forEach(roll => {
                 roll.Execute(attackRoll.HitRoll.Result);
             });
         });
@@ -48,18 +48,19 @@
         html = `${html}<br /><strong>Damage</strong><br />`;
 
         var damageHtml = ``;
-        attackRoll.DamageRolls.forEach(damageRoll => {
+        attackRoll.DamageContainers.forEach(damageContainer => {
             if(damageHtml !== ``)
             {
                 damageHtml = `${damageHtml}<br /><strong>Or</strong><br />`;
             }
+
             damageHtml = `${damageHtml}<br />`;
             
-            damageRoll.Rolls.forEach(roll => {
+            damageContainer.DamageRolls.forEach(roll => {
                 damageHtml = `${damageHtml}${this.GetRollResultHtml(roll.Result)}`;
             })
 
-            damageHtml = `${damageHtml}${this.GetRollGroupTotalHtml(damageRoll.Rolls)}`;
+            damageHtml = `${damageHtml}${this.GetRollGroupTotalHtml(damageContainer.DamageRolls)}`;
         });
         
         html = `${html}${damageHtml}`;
@@ -85,12 +86,12 @@
         var savingThrow = ``;
         var reachText = ``;
 
-        if(result.Roll.SavingThrow !== null)
+        if(result.Roll instanceof DamageRoll && result.Roll.SavingThrow !== null)
         {
-            savingThrow = `${lineStart.replace('aqua','yellow')}<strong>${result.Roll.SavingThrow.ToString()}</strong><br />`;
+            savingThrow = `${lineStart}<i>(${result.Roll.SavingThrow.ToString()})</i><br />`;
         }
 
-        if(result.Roll.Reach !== null)
+        if(result.Roll instanceof HitRoll && result.Roll.Reach !== null)
         {
             reachText = ` <i>(${result.Roll.Reach} Feet)</i>`;
         }

@@ -9,26 +9,12 @@ class Roll
 		this.DieSides = dieSides;
 		this.Modifier = modifier;
         this.Description = description;
-        this.Reach = null;
-        this.SavingThrow = null;
         this.Result = null;
-    }
-
-    AddReach(reach)
-    {
-        this.Reach = reach;
-    }
-    
-    AddSavingThrow(savingThrow)
-    {
-        this.SavingThrow = savingThrow;
     }
 
 	Clone()
 	{
         var roll = new Roll(this.NumberOfDice, this.DieSides, this.Modifier, this.Description);
-        roll.AddSavingThrow(this.SavingThrow);
-        roll.AddReach(this.Reach);
         return roll;
     }
 

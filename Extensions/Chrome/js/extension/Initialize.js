@@ -20,21 +20,18 @@ chrome.extension.sendMessage({}, function (response) {
 
                 var dr = new DiceRoller(settings);
 
-var roll = new Roll(1,4,1,"first");
-roll.AddSavingThrow(new SavingThrow(20, "wis"));
-
-var hit = new Roll(1,20,5,"desc");
-hit.AddReach(5);
-var attackRoll =       new AttackRoll(
+var attackRoll =       new AttackContainer(
     "title",
-    hit,
+    new HitRoll(1,20,5,"desc",5),
     [
-        new DamageRoll(
-            [roll,new Roll(2,8,2,"second")]
+        new DamageContainer(
+            [new DamageRoll(1,4,1,"first",new SavingThrow(20, "wis")),
+            new DamageRoll(1,4,1,"second",new SavingThrow(20, "wis"))]
         ),
-        new DamageRoll(
-            [new Roll(1,4,1,"third"),new Roll(2,8,2,"fourth")]
-        )
+        new DamageContainer(
+            [new DamageRoll(1,4,1,"first",new SavingThrow(20, "wis")),
+            new DamageRoll(1,4,1,"second",new SavingThrow(20, "wis"))]
+        ),
     ],
     [new Roll(1,4,0,"days"),new Roll(1,12,0,"hours")]
     );

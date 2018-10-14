@@ -122,10 +122,10 @@ class Action
 			var action = this;
 
 			rolls.forEach(function(rawRollText) {
-				var damageRoll = action.BuildDamageRoll(rawRollText)                                                                                                                                    
-				if(damageRoll !== null)
+				var damageContainer = action.BuildDamageRoll(rawRollText)                                                                                                                                    
+				if(damageContainer !== null)
 				{
-					damageRolls.push(damageRoll);
+					damageRolls.push(damageContainer);
 				}
 			});
 
@@ -210,7 +210,7 @@ class Action
 
 	ExecuteRollContainer()
 	{
-		var attackRoll = this.RollContainer.AttackRoll;
+		var attackRoll = this.RollContainer.AttackContainer;
 		var damageRolls = this.RollContainer.DamageRolls;
 		var mainAction = {};
 
@@ -241,13 +241,13 @@ class Action
 			};
 		}
 
-		damageRolls.forEach(function(damageRoll)
+		damageRolls.forEach(function(damageContainer)
 		{
 			mainAction.MainRoll.LinkedRolls.push({
-				Description: damageRoll.Description,
-				Dice: damageRoll.NumberOfDice,
-				Sides: damageRoll.DieSides,
-				Modifier: damageRoll.Modifier
+				Description: damageContainer.Description,
+				Dice: damageContainer.NumberOfDice,
+				Sides: damageContainer.DieSides,
+				Modifier: damageContainer.Modifier
 			});
 		});
 

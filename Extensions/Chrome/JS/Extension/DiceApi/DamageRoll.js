@@ -1,30 +1,20 @@
 class DamageRoll
-	extends UniqueObject
+	extends Roll
 {
-	constructor(rolls)
+	constructor(numberOfDice, dieSides, modifier, description, savingThrow)
 	{
 		super();
 		
-		this.Rolls = rolls;
-	}
+		this.NumberOfDice = numberOfDice;
+		this.DieSides = dieSides;
+		this.Modifier = modifier;
+        this.Description = description;
+        this.SavingThrow = savingThrow;
+        this.Result = null;
+    }
 
 	Clone()
 	{
-		var rolls = [];
-		this.Rolls.forEach(roll => {
-			rolls.push(roll.Clone());
-		});
-
-		return new DamageRoll(rolls);
-	}
-
-	ToString()
-	{
-		var value = "";
-		this.Rolls.forEach(roll => {
-			value = `${value} | ${roll.ToString()}`;
-		});
-
-		return value;
-	}
+        return new DamageRoll(this.NumberOfDice, this.DieSides, this.Modifier, this.Description, this.SavingThrow);
+    }
 }

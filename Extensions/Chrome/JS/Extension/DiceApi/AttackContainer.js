@@ -1,21 +1,21 @@
-class AttackRoll
+class AttackContainer
 	extends UniqueObject
 {
-	constructor(title, hitRoll, damageRolls, effectRolls)
+	constructor(title, hitRoll, damageContainers, effectRolls)
 	{
 		super();
 		
 		this.Title = title;
 		this.HitRoll = hitRoll;
-		this.DamageRolls = damageRolls;
+		this.DamageContainers = damageContainers;
 		this.EffectRolls = effectRolls;
 	}
 
 	Clone()
 	{
 		var damageRolls = [];
-		this.DamageRolls.forEach(damageRoll => {
-			damageRolls.push(damageRoll.Clone());
+		this.DamageContainers.forEach(damageContainer => {
+			damageRolls.push(damageContainer.Clone());
 		});
 
 		var effectRolls = [];
@@ -23,14 +23,14 @@ class AttackRoll
 			effectRolls.push(effectRoll.Clone());
 		});
 
-		return new AttackRoll(this.Title, this.HitRoll.Clone(), damageRolls, effectRolls);
+		return new AttackContainer(this.Title, this.HitRoll.Clone(), damageRolls, effectRolls);
 	}
 
 	ToString()
 	{
 		var damageValue = "";
-		this.DamageRolls.forEach(damageRoll => {
-			damageValue = `${damageRoll.ToString()}`;
+		this.DamageContainers.forEach(damageContainer => {
+			damageValue = `${damageContainer.ToString()}`;
 		});
 
 		var effectValue = "";
