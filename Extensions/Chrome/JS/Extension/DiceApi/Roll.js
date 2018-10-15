@@ -14,8 +14,7 @@ class Roll
 
 	Clone()
 	{
-        var roll = new Roll(this.NumberOfDice, this.DieSides, this.Modifier, this.Description);
-        return roll;
+        return new Roll(this.NumberOfDice, this.DieSides, this.Modifier, this.Description);
     }
 
     get ModifierString()

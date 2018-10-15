@@ -34,7 +34,8 @@ class Skill
 		$(`#extension_monster_skills_${this.Ability.Name}`).append(`<span id="${this.Id}">${this.Name}</span>, `);
 		
 		var skill = this;
-		this.AddClickToRollToElement($(`#${this.Id}`), function() { 
+		this.AddClickToRollToElement($(`#${this.Id}`), function()
+		{ 
 			skill.ExecuteSkillCheckRoll();
 		});
 
@@ -46,10 +47,12 @@ class Skill
 		var skill = this;
 
 		//Inject the span into all linked skill text
-		element.find('a').each(function() {
+		element.find('a').each(function()
+		{
 			if($(this).text() === skill.Name)
 			{
-				$(this).click(function(e) {
+				$(this).click(function(e)
+				{
 					e.preventDefault();
 				});
 
@@ -57,7 +60,8 @@ class Skill
 
 				$(this).html(`<span class="${id}">${skill.Name}</span>`);
 
-				skill.AddClickToRollToElement($(`.${id}`), function() { 
+				skill.AddClickToRollToElement($(`.${id}`), function()
+				{ 
 					skill.ExecuteSkillCheckRoll();
 				});
 			}
@@ -69,7 +73,8 @@ class Skill
 		var mainAction =
 		{
 			Title: this.Name,
-			MainRoll: {
+			MainRoll:
+			{
 				Description: "Skill Check",
 				Dice: 1,
 				Sides: 20,

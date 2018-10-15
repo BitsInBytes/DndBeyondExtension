@@ -9,7 +9,8 @@ class UIObject
 		super();
 	}
 
-	AddClickToRollToElement(element, clickCallBack) {
+	AddClickToRollToElement(element, clickCallBack)
+	{
 		element.style('cursor', "pointer", 'important');
 		element.style('color', 'DarkBlue', 'important');
 		element.style('font-weight', "boldest", 'important');

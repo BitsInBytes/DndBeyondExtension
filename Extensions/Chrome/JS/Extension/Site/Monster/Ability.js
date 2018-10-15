@@ -16,7 +16,8 @@ class Ability
 		this.Element = element;
 
 		//Only the short hand name exists within the DOM, so we will have to hard code this:
-		switch(this.Name) {
+		switch(this.Name)
+		{
 			case "STR":
 				this.Description = "Strength"
 				break;
@@ -41,7 +42,8 @@ class Ability
 	InjectIntoDom()
 	{
 		var ability = this;
-		this.AddClickToRollToElement(this.Element.find('.ability-block__heading'), function() { 
+		this.AddClickToRollToElement(this.Element.find('.ability-block__heading'), function()
+		{ 
 			ability.ExecuteSkillCheckRoll();
 		});
 	}
@@ -51,7 +53,8 @@ class Ability
 		var mainAction =
 		{
 			Title: this.Name,
-			MainRoll: {
+			MainRoll:
+			{
 				Description: "Ability Check",
 				Dice: 1,
 				Sides: 20,

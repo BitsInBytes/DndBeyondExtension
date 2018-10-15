@@ -25,28 +25,34 @@ class DiceRollerWidget
 
     Load()
     {
-        if (this.Settings.DndBeyond_DiceRollerWidgetVerticalEnabled === false) {
+        if (this.Settings.DndBeyond_DiceRollerWidgetVerticalEnabled === false)
+        {
             var options_width = 485; //Horizontal
-        } else { 
+        }
+        else
+        { 
             var options_width = 200; //Vertical
         }
     
         //Create widget
-        var dialog = $(`<div id='DiceRollerWidget'>${this.getDiceRollerHtml()}</div>`)
-                        .dialog({
-                            modal: false,
-                            resizable: false,
-                            draggable: true,
-                            width: options_width
-                        })
-                        .dialogExtend({
-                            closable: true,
-                            maximizable: false,
-                            minimizable: true,
-                            minimizeLocation: "left",
-                            collapsable: false,
-                            dblclick: "minimize"
-                        });
+        var dialog = 
+            $(`<div id='DiceRollerWidget'>${this.getDiceRollerHtml()}</div>`)
+            .dialog(
+            {
+                modal: false,
+                resizable: false,
+                draggable: true,
+                width: options_width
+            })
+            .dialogExtend(
+            {
+                closable: true,
+                maximizable: false,
+                minimizable: true,
+                minimizeLocation: "left",
+                collapsable: false,
+                dblclick: "minimize"
+            });
 
         var dialogContainer = dialog.parent();
     
@@ -76,23 +82,28 @@ class DiceRollerWidget
         dialogContainer.find(".ui-dialog-titlebar").append(`<button type="button" class="widget-minimize-restore-button css-state-restore ui-button ui-corner-all ui-widget ui-button-icon-only" style="background-color: blueviolet; padding:4px; float: right; margin-top:4px; margin-right: 5px;">${restoreImage}</button>`);
 
         //Close button function
-        dialogContainer.find('.widget-close-button').click(function () {
+        dialogContainer.find('.widget-close-button').click(function ()
+        {
             dialog.dialog('close');
         });
 
         //Restore / Minimize toggle function
         let restore_minimize_button = dialogContainer.find('.widget-minimize-restore-button');
 
-        restore_minimize_button.click(function () {
+        restore_minimize_button.click(function ()
+        {
             //Toggle
-            if (restore_minimize_button.hasClass("css-state-restore")) {
+            if (restore_minimize_button.hasClass("css-state-restore"))
+            {
                 restore_minimize_button.removeClass("css-state-restore");
                 restore_minimize_button.html(minimizeImage);
                 dialog.dialogExtend('restore');
     
                 dialog.dialog("option", "position", { my: "center", at: "center", of: window });
     
-            } else {
+            }
+            else
+            {
                 restore_minimize_button.addClass("css-state-restore");
                 restore_minimize_button.html(restoreImage);
                 dialog.dialogExtend('minimize');
@@ -108,8 +119,10 @@ class DiceRollerWidget
         dialog.dialogExtend('minimize');
     }
 
-    getDiceRollerHtml() {
-        var getDiceRollerDie = (die) => {
+    getDiceRollerHtml()
+    {
+        var getDiceRollerDie = (die) =>
+        {
             return `
                 <td style="width:33%;">
                     <center>
@@ -160,7 +173,8 @@ class DiceRollerWidget
             </table>
         `;
 
-        if (this.Settings.DndBeyond_DiceRollerWidgetVerticalEnabled === false) {
+        if (this.Settings.DndBeyond_DiceRollerWidgetVerticalEnabled === false)
+        {
             //Horizontal
             return `
             <p>
@@ -182,9 +196,12 @@ class DiceRollerWidget
                  ${roll_reset_buttons}
              </p>`;
     
-        } else {
+        } 
+        else
+        {
             //Vertical
-            var buildVertDieTable = (die) => {
+            var buildVertDieTable = (die) =>
+            {
                 return `
                     <table style="width: 100%;">
                         <tr>
@@ -211,10 +228,14 @@ class DiceRollerWidget
         }
     }
 
-    setUpDiceRollerEvents() {
-        $("#diceRollerRollButton").click(function () {
-            var buildActionContainersFromDiceRoller = () => {
-                var buildActionContainerFromDie = (die) => {
+    setUpDiceRollerEvents()
+    {
+        $("#diceRollerRollButton").click(function ()
+        {
+            var buildActionContainersFromDiceRoller = () =>
+            {
+                var buildActionContainerFromDie = (die) =>
+                {
                     return {
                         Title: `D${die}`,
                         MainRoll: {
@@ -227,7 +248,8 @@ class DiceRollerWidget
                 };
         
                 var actions = [];
-                var tempActions = [
+                var tempActions =
+                [
                     buildActionContainerFromDie(4),
                     buildActionContainerFromDie(6),
                     buildActionContainerFromDie(8),
@@ -236,8 +258,10 @@ class DiceRollerWidget
                     buildActionContainerFromDie(20)
                 ];
             
-                $.each(tempActions, function (index) {
-                    if (tempActions[index].MainRoll.Dice != 0) {
+                $.each(tempActions, function (index)
+                {
+                    if (tempActions[index].MainRoll.Dice != 0) 
+                    {
                         actions.push(tempActions[index]);
                     }
                 });
@@ -247,19 +271,22 @@ class DiceRollerWidget
 
             var actions = buildActionContainersFromDiceRoller();
     
-            if (actions.length === 0) {
+            if (actions.length === 0)
+            {
                 return;
             }
     
             ExecuteActions(actions);
         });
 
-        var resetDie = (die) => {
+        var resetDie = (die) =>
+        {
             $(`#d${die}_dice`).val('0');
             $(`#d${die}_mod`).val('0');
         };
     
-        $("#diceRollerResetButton").click(function () {
+        $("#diceRollerResetButton").click(function ()
+        {
             resetDie(4);
             resetDie(6);
             resetDie(8);
@@ -270,8 +297,10 @@ class DiceRollerWidget
 
         var hookDiceRollerDieActions = (die) =>
         {
-            var hookDiceRollerElementWithMouseWheel = (element) => {
-                element.on("mousewheel", function (event) {
+            var hookDiceRollerElementWithMouseWheel = (element) =>
+            {
+                element.on("mousewheel", function (event)
+                {
                     event.preventDefault();
                     var currentElement = $(this);
                     var inc = parseFloat(currentElement.attr('step'));
@@ -280,17 +309,23 @@ class DiceRollerWidget
                     var currVal = parseFloat(currentElement.val());
             
                     // If blank, assume value of 0
-                    if (isNaN(currVal)) {
+                    if (isNaN(currVal))
+                    {
                         currVal = 0.0;
                     }
             
                     // Increment or decrement numeric based on scroll distance
-                    if (event.deltaFactor * event.deltaY > 0) {
-                        if (currVal + inc <= max) {
+                    if (event.deltaFactor * event.deltaY > 0)
+                    {
+                        if (currVal + inc <= max)
+                        {
                             currentElement.val(currVal + inc);
                         }
-                    } else {
-                        if (currVal - inc >= min) {
+                    }
+                    else
+                    {
+                        if (currVal - inc >= min)
+                        {
                             currentElement.val(currVal - inc);
                         }
                     }
@@ -300,8 +335,10 @@ class DiceRollerWidget
             hookDiceRollerElementWithMouseWheel($(`#d${die}_dice`));
             hookDiceRollerElementWithMouseWheel($(`#d${die}_mod`));
         
-            $(`#d${die}_img`).click(function () {
-                ExecuteActions([{
+            $(`#d${die}_img`).click(function ()
+            {
+                ExecuteActions(
+                [{
                     Title: `D${die}`,
                     MainRoll: {
                         Description: "",

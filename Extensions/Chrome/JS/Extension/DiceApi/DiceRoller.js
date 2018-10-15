@@ -17,7 +17,8 @@
 
         attackRoll.DamageContainers.forEach(damageContainer =>
         {
-            damageContainer.DamageRolls.forEach(roll => {
+            damageContainer.DamageRolls.forEach(roll => 
+            {
                 roll.Execute(attackRoll.HitRoll.Result);
             });
         });
@@ -45,10 +46,12 @@
         var html = `<strong><i>${attackRoll.Title.toTitleCase()}</i></strong>`;
 
         html = `${html}<br /><br />${this.GetRollResultHtml(attackRoll.HitRoll.Result)}`;
+        html = `${html}${this.GetObjectExpressionHtml(attackRoll.HitRoll)}<br />`;
         html = `${html}<br /><strong>Damage</strong><br />`;
 
         var damageHtml = ``;
-        attackRoll.DamageContainers.forEach(damageContainer => {
+        attackRoll.DamageContainers.forEach(damageContainer =>
+        {
             if(damageHtml !== ``)
             {
                 damageHtml = `${damageHtml}<br /><strong>Or</strong><br />`;
@@ -56,11 +59,13 @@
 
             damageHtml = `${damageHtml}<br />`;
             
-            damageContainer.DamageRolls.forEach(roll => {
+            damageContainer.DamageRolls.forEach(roll =>
+            {
                 damageHtml = `${damageHtml}${this.GetRollResultHtml(roll.Result)}`;
             })
 
             damageHtml = `${damageHtml}${this.GetRollGroupTotalHtml(damageContainer.DamageRolls)}`;
+            damageHtml = `${damageHtml}${this.GetObjectExpressionHtml(damageContainer)}<br />`;
         });
         
         html = `${html}${damageHtml}`;
@@ -69,8 +74,10 @@
         {
             html = `${html}<br /><strong>Additional Effects</strong><br /><br />`;
 
-            attackRoll.EffectRolls.forEach(roll => {
+            attackRoll.EffectRolls.forEach(roll =>
+            {
                 html = `${html}${this.GetRollResultHtml(roll.Result)}`;
+                html = `${html}${this.GetObjectExpressionHtml(roll)}<br />`;
             })
         }
 
@@ -102,7 +109,8 @@
     GetRollGroupTotalHtml(rolls)
     {
         var total = 0;
-        rolls.forEach(roll => {
+        rolls.forEach(roll =>
+        {
             total = total + roll.Result.TotalValue;
         })
 
@@ -110,6 +118,11 @@
         var valueDescription = `<strong>${total} Total</strong>`;
 
         return `${lineStart}${valueDescription}<br />`;
+    }
+
+    GetObjectExpressionHtml(object)
+    {
+        return `<span style="background-color:Honeydew; color:deeppink; font-size: 80%;">${object.ToString()}</span>`;
     }
 
     PopUp(html)
@@ -153,46 +166,60 @@
             fd.append("username", name);
             fd.append("icon_url", icon);
     
-            $.ajax({
+            $.ajax(
+            {
                 url: 'https://slack.com/api/chat.postMessage',
                 data: fd,
                 processData: false,
                 contentType: false,
                 type: 'POST',
-                success: function (data) {
-                    if (data.ok === true) {
+                success: function (data)
+                {
+                    if (data.ok === true)
+                    {
                         displaySuccess("Slack message sent successfully!");
-                    } else {
+                    }
+                    else
+                    {
                         displayError("Slack message failed with response!");
                         console.log(data);
                     }
                 },
-                error: function () {
+                error: function ()
+                {
                     displayError("Slack message failed!");
                 }
             });
-        } else {
-            var dialogOptions = {
+        }
+        else
+        {
+            var dialogOptions =
+            {
                 "modal": true,
                 "resizable": false,
                 "draggable": true,
                 width: "auto",
-                hide: {
+                hide:
+                {
                     effect: 'show',
                     duration: 250
                 },
-                hide: {
+                hide:
+                {
                     effect: 'fade',
                     duration: 250
                 },
-                open: function () {
+                open: function ()
+                {
                     var popup = $(this);
     
-                    $('.ui-widget-overlay').bind('click', function () {
+                    $('.ui-widget-overlay').bind('click', function ()
+                    {
                         popup.dialog('close');
                     });
     
-                    $('.DiceRollResultsRollAgainButton').bind('click', function () {
+                    $('.DiceRollResultsRollAgainButton').bind('click', function ()
+                    {
                         popup.dialog('close');
                         //this.ExecuteActions(actions);
                     });
@@ -220,7 +247,8 @@
             //Create header buttons
             dialogContainer.find(".ui-dialog-titlebar").append('<button type="button" class="widget-close-button ui-button ui-corner-all ui-widget ui-button-icon-only" title="Close" style="background-color: #bf3333; padding:4px; float: right; margin-top:4px; margin-right: 5px;">' + closeImage + '</button>');
     
-            dialogContainer.find('.widget-close-button').click(function () {
+            dialogContainer.find('.widget-close-button').click(function ()
+            {
                 dialog.dialog('close');
             });
         }

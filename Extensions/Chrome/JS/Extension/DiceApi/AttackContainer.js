@@ -14,12 +14,14 @@ class AttackContainer
 	Clone()
 	{
 		var damageRolls = [];
-		this.DamageContainers.forEach(damageContainer => {
+		this.DamageContainers.forEach(damageContainer =>
+		{
 			damageRolls.push(damageContainer.Clone());
 		});
 
 		var effectRolls = [];
-		this.EffectRolls.forEach(effectRoll => {
+		this.EffectRolls.forEach(effectRoll => 
+		{
 			effectRolls.push(effectRoll.Clone());
 		});
 
@@ -29,12 +31,14 @@ class AttackContainer
 	ToString()
 	{
 		var damageValue = "";
-		this.DamageContainers.forEach(damageContainer => {
+		this.DamageContainers.forEach(damageContainer => 
+		{
 			damageValue = `${damageContainer.ToString()}`;
 		});
 
 		var effectValue = "";
-		this.EffectRolls.forEach(effectRoll => {
+		this.EffectRolls.forEach(effectRoll => 
+		{
 			effectValue = `${effectValue} | ${effectRoll.ToString()}`;
 		});
 

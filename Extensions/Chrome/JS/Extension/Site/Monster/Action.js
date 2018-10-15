@@ -121,7 +121,8 @@ class Action
 			var damageRolls = [];
 			var action = this;
 
-			rolls.forEach(function(rawRollText) {
+			rolls.forEach(function(rawRollText)
+			{
 				var damageContainer = action.BuildDamageRoll(rawRollText)                                                                                                                                    
 				if(damageContainer !== null)
 				{
@@ -219,7 +220,8 @@ class Action
 			mainAction =
 			{
 				Title: this.Name,
-				MainRoll: {
+				MainRoll:
+				{
 					Dice: 0,
 					LinkedRolls: [],
 					DiceFound: false
@@ -231,7 +233,8 @@ class Action
 			mainAction =
 			{
 				Title: this.Name,
-				MainRoll: {
+				MainRoll:
+				{
 					Description: attackRoll.Description,
 					Dice: attackRoll.NumberOfDice,
 					Sides: attackRoll.DieSides,
@@ -243,7 +246,8 @@ class Action
 
 		damageRolls.forEach(function(damageContainer)
 		{
-			mainAction.MainRoll.LinkedRolls.push({
+			mainAction.MainRoll.LinkedRolls.push(
+			{
 				Description: damageContainer.Description,
 				Dice: damageContainer.NumberOfDice,
 				Sides: damageContainer.DieSides,
@@ -259,14 +263,17 @@ class Action
 		this.Rollable = true;
 		var action = this;
 		
-		this.AddClickToRollToElement(this.Element.find('.action_title'), function() { 
+		this.AddClickToRollToElement(this.Element.find('.action_title'), function()
+		{ 
 			action.ExecuteRollContainer();
 		});
 
 		this.RollContainer.DamageRolls.forEach(function(roll)
 		{
-			action.AddClickToRollToElement($(`.${roll.Id}`), function() { 
-				ExecuteActions([{
+			action.AddClickToRollToElement($(`.${roll.Id}`), function()
+			{ 
+				ExecuteActions(
+				[{
 					Title: action.Name,
 					MainRoll: {
 						Dice: 0,

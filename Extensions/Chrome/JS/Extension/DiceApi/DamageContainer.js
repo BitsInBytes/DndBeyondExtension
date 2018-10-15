@@ -11,7 +11,8 @@ class DamageContainer
 	Clone()
 	{
 		var rolls = [];
-		this.DamageRolls.forEach(roll => {
+		this.DamageRolls.forEach(roll =>
+		{
 			rolls.push(roll.Clone());
 		});
 
@@ -21,8 +22,16 @@ class DamageContainer
 	ToString()
 	{
 		var value = "";
-		this.DamageRolls.forEach(roll => {
-			value = `${value} | ${roll.ToString()}`;
+		this.DamageRolls.forEach(roll =>
+		{
+			if(value === "")
+			{
+				value = roll.ToString();
+			}
+			else
+			{
+				value = `${value} | ${roll.ToString()}`;
+			}
 		});
 
 		return value;

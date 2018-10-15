@@ -47,8 +47,6 @@
 						"js/extension/core/UIObject.js",
 						"js/extension/core/Settings.js",
 
-						"js/extension/DiceRoller.js",
-						
 						"js/extension/diceApi/Roll.js",
 						"js/extension/diceApi/DamageRoll.js",
 						"js/extension/diceApi/HitRoll.js",

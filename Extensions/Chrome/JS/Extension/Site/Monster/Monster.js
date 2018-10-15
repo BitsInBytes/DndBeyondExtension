@@ -43,11 +43,13 @@ class Monster
 		{
 			var blockElement = $(this);
 
-			self.Skills.forEach(function(skill) {
+			self.Skills.forEach(function(skill)
+			{
 				skill.HookElementHtml(blockElement);
 			});
 
-			self.Actions.filter(item => item.Rollable === true).forEach(function(action) {
+			self.Actions.filter(item => item.Rollable === true).forEach(function(action)
+			{
 				skill.HookElementHtml(blockElement);
 			});
 		});
