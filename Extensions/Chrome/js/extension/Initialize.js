@@ -16,128 +16,58 @@ chrome.extension.sendMessage({}, function (response) {
                 "DndBeyond_DiceRollerWidgetVerticalEnabled",
                 "DndBeyond_BetaCode"], function (data) {
                     
-                defaultSettingsObject(data);
+                var settings = new Settings(data);
 
-                GLOBAL_SETTINGS_OBJECT = data;
+                var dr = new DiceRoller(settings);
 
-                if (GLOBAL_SETTINGS_OBJECT.DndBeyond_Enabled === true) {
-                    $.ajax({
-                        contentType: 'application/json',
-                        dataType: 'json',
-						url: "https://localhost:44335/v3/resources",
-                        method: 'POST',
-                        processData: false,
-                        data: JSON.stringify(getServicePayload(false)),
-                        success: function (data) {
-                            if (!data.versionSupported) {
-                                displayError("Extension version no longer supported, please update your browser extensions.");
-                            } else {
-                                GLOBAL_RESOURCES_OBJECT = data;
+var attackRoll =       new AttackContainer(
+    "title",
+    new HitRoll(1,20,5,"desc",5),
+    [
+        new DamageContainer(
+            [new DamageRoll(1,4,1,"first",new SavingThrow(20, "wis")),
+            new DamageRoll(1,4,1,"second",new SavingThrow(20, "wis"))]
+        ),
+        new DamageContainer(
+            [new DamageRoll(1,4,1,"first",new SavingThrow(20, "wis")),
+            new DamageRoll(1,4,1,"second",new SavingThrow(20, "wis"))]
+        ),
+    ],
+    [new Roll(1,4,0,"days"),new Roll(1,12,0,"hours")],
+    `Frightful Presence. Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to the dragon's Frightful Presence for the next 24 hours.`
+    );
 
-                                //----------------------------------------------
-                                //-After this point js is dynamic from service!-
-                                //----------------------------------------------
-                                jQuery.globalEval(data.javascriptContainer.pageJavascript);
-                            }
-                        },
-                        error: function () {
-                            displayError("Extension failed to get resources from the service.");
-                        }
-                    });
+                var executedRoll = dr.ExecuteAttackRoll(attackRoll);
+
+                dr.PublishExecutedAttackRoll(executedRoll);
+
+return;
+                if (settings.DndBeyond_Enabled === true)
+                {
+                    //Global objects needed by DiceRoller.js
+                    //TODO: Rewrite to not require global objects
+                    GLOBAL_SETTINGS_OBJECT = settings;
+                    GLOBAL_WIDGET_OBJECT = DiceRollerWidget.Initialize(settings);
+                    GLOBAL_CHARACTER_OBJECT = Character.Initialize(settings);
+                    GLOBAL_MONSTER_OBJECT = Monster.Initialize(settings);
+
+                    LightboxExtensions.Initialize();
                 }
 		    });
 		}
 	}, 10);
 });
 
-function defaultSettingsObject(data) {
-    //Introduced in 1.0
-    if (data.DndBeyond_Enabled === undefined) {
-        data.DndBeyond_Enabled = true;
-    }
-
-    if (data.DndBeyond_SlackEnabled === undefined) {
-        data.DndBeyond_SlackEnabled = false;
-    }
-
-    if (data.DndBeyond_SlackToken === undefined) {
-        data.DndBeyond_SlackToken = "";
-    }
-
-    if (data.DndBeyond_SlackChannel === undefined) {
-        data.DndBeyond_SlackChannel = "";
-    }
-
-    //Introduced in 1.1
-    if (data.DndBeyond_DiceRollerWidgetEnabled === undefined) {
-        data.DndBeyond_DiceRollerWidgetEnabled = true;
-    }
-    
-    if (data.DndBeyond_MonstersEnabled === undefined) {
-        data.DndBeyond_MonstersEnabled = true;
-    }
-
-    //Introduced in 1.1.2
-    if (data.DndBeyond_DiceRollerWidgetVerticalEnabled === undefined) {
-        data.DndBeyond_DiceRollerWidgetVerticalEnabled = false;
-    }
-
-    //Introduced in 1.2.0
-    if (data.DndBeyond_BetaCode === undefined) {
-        data.DndBeyond_BetaCode = "";
-    }
-
-    //Introduced in 1.3.0
-    if (data.DndBeyond_CharactersEnabled === undefined) {
-        data.DndBeyond_CharactersEnabled = true;
-    }
-}
-
-function getServicePayload(loadHtml) {
-    var html = "";
-
-    if (loadHtml) {
-        html = document.documentElement.outerHTML;
-    }
-
-    return {
-        name: $('meta[property="og:title"]').attr('content'),
-        html: html,
-        title: document.title,
-        url: window.location.href,
-        extensionVersion: "1.3.0",
-        browser: getBrowser(),
-        options: {
-            DndBeyond_DiceRollerWidgetEnabled: GLOBAL_SETTINGS_OBJECT.DndBeyond_DiceRollerWidgetEnabled,
-            DndBeyond_MonstersEnabled: GLOBAL_SETTINGS_OBJECT.DndBeyond_MonstersEnabled,
-            DndBeyond_CharactersEnabled: GLOBAL_SETTINGS_OBJECT.DndBeyond_CharactersEnabled,
-            DndBeyond_BetaCode: GLOBAL_SETTINGS_OBJECT.DndBeyond_BetaCode
-        }
-    };
-}
-
+//TODO: Replace with object invoke
+//Used globally
 function displayError(dataToDisplay) {
     console.error(dataToDisplay);
 
     $.notify(dataToDisplay, { position: "top right", className: "error" });
 }
 
-function getBrowser() {
-    var ua = navigator.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+function displaySuccess(dataToDisplay) {
+    console.info(dataToDisplay);
 
-    if (/trident/i.test(M[1])) {
-        tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-        return 'IE ' + (tem[1] || '');
-    }
-
-    if (M[1] === 'Chrome') {
-        tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-        if (tem != null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
-    }
-
-    M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-
-    if ((tem = ua.match(/version\/(\d+)/i)) != null) M.splice(1, 1, tem[1]);
-
-    return M[0];
+    $.notify(dataToDisplay, { globalPosition: "top right", className: "success" });
 }
