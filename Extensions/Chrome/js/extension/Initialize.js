@@ -18,30 +18,34 @@ chrome.extension.sendMessage({}, function (response) {
                     
                 var settings = new Settings(data);
 
-                var dr = new DiceRoller(settings);
+//                 var dr = new DiceRoller(settings);
 
-var attackRoll =       new AttackContainer(
-    "title",
-    new HitRoll(1,20,5,"desc",5),
-    [
-        new DamageContainer(
-            [new DamageRoll(1,4,1,"first",new SavingThrow(20, "wis")),
-            new DamageRoll(1,4,1,"second",new SavingThrow(20, "wis"))]
-        ),
-        new DamageContainer(
-            [new DamageRoll(1,4,1,"first",new SavingThrow(20, "wis")),
-            new DamageRoll(1,4,1,"second",new SavingThrow(20, "wis"))]
-        ),
-    ],
-    [new Roll(1,4,0,"days"),new Roll(1,12,0,"hours")],
-    `Frightful Presence. Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to the dragon's Frightful Presence for the next 24 hours.`
-    );
+// var attackRoll =       new AttackContainer(
+//     "title",
+//     new HitRoll(1,20,5,"desc",5),
+//     [
+//         new DamageContainer(
+//             [new DamageRoll(1,4,1,"first",new SavingThrow(20, "wis")),
+//             new DamageRoll(1,4,1,"second",new SavingThrow(20, "wis"))],
 
-                var executedRoll = dr.ExecuteAttackRoll(attackRoll);
+//             [new Roll(1,4,0,"days"),new Roll(1,12,0,"hours")]
+//         ),
+//         new DamageContainer(
+//             [new DamageRoll(1,4,1,"first",new SavingThrow(20, "wis")),
+//             new DamageRoll(1,4,1,"second",new SavingThrow(20, "wis"))],
 
-                dr.PublishExecutedAttackRoll(executedRoll);
+//             null
+//         ),
+//     ],
+//     [new Roll(1,4,0,"days"),new Roll(1,12,0,"hours")],
+//     `Frightful Presence. Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success. If a creature's saving throw is successful or the effect ends for it, the creature is immune to the dragon's Frightful Presence for the next 24 hours.`
+//     );
 
-return;
+//                 var executedRoll = dr.ExecuteAttackRoll(attackRoll);
+
+//                 dr.PublishExecutedAttackRoll(executedRoll);
+
+// return;
                 if (settings.DndBeyond_Enabled === true)
                 {
                     //Global objects needed by DiceRoller.js

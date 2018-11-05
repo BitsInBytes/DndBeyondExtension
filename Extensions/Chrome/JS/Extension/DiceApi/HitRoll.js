@@ -1,12 +1,12 @@
 class HitRoll
 	extends Roll
 {
-	constructor(numberOfDice, dieSides, modifier, description, reach)
+	constructor(modifier, description, reach)
 	{
 		super();
 		
-		this.NumberOfDice = numberOfDice;
-		this.DieSides = dieSides;
+		this.NumberOfDice = 1;
+		this.DieSides = 20;
 		this.Modifier = modifier;
         this.Description = description;
         this.Reach = reach;

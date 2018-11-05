@@ -22,11 +22,11 @@ class Monster
 			{
 				var monster = new Monster(settings);
 
-				monster.Abilities = Ability.BuildAll();
-				monster.Skills = Skill.BuildAll(monster.Abilities);
+				//monster.Abilities = Ability.BuildAll();
+				//monster.Skills = Skill.BuildAll(monster.Abilities);
 				monster.Actions = Action.BuildAll();
 
-				monster.MakeMatchingNamesRollable();
+				//monster.MakeMatchingNamesRollable();
 
 				return monster;
 			}

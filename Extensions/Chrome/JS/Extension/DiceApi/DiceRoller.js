@@ -21,6 +21,14 @@
             {
                 roll.Execute(attackRoll.HitRoll.Result);
             });
+
+            if(damageContainer.EffectRolls !== null)
+            {
+                damageContainer.EffectRolls.forEach(roll => 
+                {
+                    roll.Execute(attackRoll.HitRoll.Result);
+                });
+            }
         });
 
         attackRoll.EffectRolls.forEach(effectRoll =>
@@ -56,6 +64,18 @@
 
             damageHtml = `${damageHtml}${this.GetRollGroupTotalHtml(damageContainer.DamageRolls)}`;
             damageHtml = `${damageHtml}${this.GetObjectExpressionHtml(damageContainer)}<br />`;
+
+            if(damageContainer.EffectRolls !== null)
+            {
+                var effectLineStart = `<span style="background-color:red; padding-right:3px; margin-right:5px;" />`;
+                damageHtml = `${damageHtml}${effectLineStart}<strong><i>Effects</i></strong><br />`;
+    
+                damageContainer.EffectRolls.forEach(roll =>
+                {
+                    damageHtml = `${damageHtml}${this.GetRollResultHtml(roll.Result)}`;
+                    damageHtml = `${damageHtml}${this.GetObjectExpressionHtml(roll)}<br />`;
+                })
+            }
         });
         
         html = `${html}${damageHtml}`;

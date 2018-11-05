@@ -1,312 +1,337 @@
-/*
+//Todo:
+//Damage container...contains effects?
+//Saving throws (+obj / roller rewrite)
+//Effect dies
+//Testing new damage die changes
+//Make each roll clickable
+//Name clickable
+//Execute actions rewrite
 
-//Title
-^[a-zA-z0-9\s\(\)\-\–]{1,}\.
-
-//To hit
-(?:\+|\-)\d{1,}\sto\shit
-
-//Range
-reach\s\d{1,}\sft
-
-//Split (OR)
-\s\w{1,}\sdamage, or 
-
-//Damage rolls
-\(\d{1,}d\d{1,}(?:\s(?:\+|\-)\s\d\)|\))\s\w{1,}\sdamage
-
-//Non damage rolls
-\s\d{1,}d\d{1,}\s
-
-//Saving throws
-\sDC\s\d{1,}\s\w{1,}\ssaving\sthrow
-
-//Recharge
-\(recharge\s(?:\d\S\d|\d)\)
-
-
-split title from body
-	find recharge in title
-split to hit from body
-split reach (if any)
-split (OR) in body(s)
-
-each body
-	damage rolls
-	saving throws
-	
-	
-non damage rolls
-
-	Comments are for example action description: 'Talon. Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.'
-*/
 class Action
-	extends UIObject
+    extends UIObject
 {
-	//Handles '.mon-stat-block__description-block-content' ~> <p>
-	constructor(element)
-	{
-		super();
+    static BuildAll()
+    {
+        var actions = [];
 
-		var nameElement = element.find('strong');
-		nameElement.addClass('action_title');
+        $('.mon-stat-block__description-block').each(function()
+        {
+            $(this).find('.mon-stat-block__description-block-content').find('p').each(function()
+            {
+                var action = new Action($(this));
 
-		//'Talon.'
-		var name = nameElement.text();
+                if(action.Valid === true)
+                {
+                    actions.push(action);
+                }
+            });
+        });
 
-		if(name.toLowerCase() == "variant")
-		{
-			this.Valid = false;
-		}
-		else
-		{
-			this.Valid = true;
-			this.Element = element;
-			//'Talon'
-			this.Name = name.replace('.','');
-			//Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.
-			this.Description = element.text().toLowerCase().replace(this.Name.toLowerCase(), '').trim();
-			this.RollContainer = this.BuildRollContainer();
-			this.Rollable = false;
+        return actions;
+    }
 
-			if(this.RollContainer.DamageRolls !== null)
-			{
-				this.Rollable = true;
-				this.InjectClickToRollIntoDom();
-			}
-		}
-	}
+    //Handles '.mon-stat-block__description-block-content' ~> <p>
+    constructor(element)
+    {
+        super();
 
-	BuildRollContainer()
-	{
-		//1D20+4 to hit
-		var attackRoll = this.BuildAttackRoll();
-		//1D4+2 slashing damage
-		var damageRolls = this.BuildDamageRolls();
+        this.Description = element.text().toLowerCase().trim();
 
-		return new RollContainer(attackRoll, damageRolls);
-	}
+        var name = this.MatchFirstAndRebuild(/^[a-zA-z0-9\s\(\)\-\–]{1,}\./g);
 
-	BuildAttackRoll()
-	{
-		//'Melee Weapon' , '+4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.'
-		var attack = this.Description.split('attack:');
+        if(name.toLowerCase() == "variant")
+        {
+            this.Valid = false;
+        }
+        else
+        {
+            this.Valid = true;
+            this.Element = element;
+            this.Name = name.replace('.','');
+            this.AttackContainer = this.BuildAttackContainer();
 
-		if(attack.length === 1)
-		{
-			return null;
-		}
+            console.table(this.AttackContainer);
 
-		//'+4' , ', reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.'
-		//modifier = 4
-		var modifier = parseInt(attack[1].trim().replace('+',''));
+            this.Rollable = false;
 
-		return new Roll(1, 20, modifier, "to hit")
-	}
+            // if(this.RollContainer.DamageRolls !== null)
+            // {
+            //  this.Rollable = true;
+            //  this.InjectClickToRollIntoDom();
+            // }
+        }
+    }
 
-	//Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) slashing damage.
-	BuildDamageRolls()
-	{
-		//Injects a recharge description so it gets picked up as a damage roll
-		if(this.Name.includes('Recharge'))
-		{
-			this.Description = `At the start of the monsters turn, roll (1d6) to recharge. ${this.Description}`;
-		}
+    MatchFirstAndRebuild(regex)
+    {
+        var match = this.Description.match(regex);
 
-		// [ "(1d4 + 2)" ]
-		var rolls = this.Description.match(/\((.*?)\)+/g);
+        if(match === null)
+        {
+            return null;
+        }
 
-		if(rolls !== null)
-		{
-			var damageRolls = [];
-			var action = this;
+        //Take the "unprocessed" part of the description
+        this.Description = this.Description.split(match[0]).join();;
 
-			rolls.forEach(function(rawRollText)
-			{
-				var damageContainer = action.BuildDamageRoll(rawRollText)                                                                                                                                    
-				if(damageContainer !== null)
-				{
-					damageRolls.push(damageContainer);
-				}
-			});
+        return match[0]
+    }
 
-			if(damageRolls.length !== 0)
-			{
-				return damageRolls;
-			}
-		}
+    BuildAttackContainer()
+    {
+        var effectRolls = this.BuildRechargeEffectRoll();
+        effectRolls = this.BuildEffectRolls(effectRolls);
+        
+        var toHitRoll = this.BuildToHitRoll();
+        var damageRolls = this.BuildDamageContainers();
 
-		return null;
-	}
+        return new AttackContainer(this.Name, toHitRoll, damageRolls, effectRolls);
+    }
 
-	BuildDamageRoll(rawRollText)
-	{
-		//(1d4 + 2)
-		var damage = rawRollText;
-		//slashing damage
-		var damageDescription = this.Description.split(rawRollText)[1].trim().split(' ');
+    BuildRechargeEffectRoll()
+    {
+        if(this.Name.includes("recharge"))
+        {
+            return new 
+            [
+                new Roll(1, 6, 0, "To Recharge")
+            ]
+        }
 
-		//Makes sure we can find the "damage" text, meaning this is a damage roll
-		if(damageDescription.length > 1 && damageDescription[1].toLowerCase().includes('damage'))
-		{
-			//slashing damage
-			damageDescription = damageDescription[0] + ' ' + damageDescription[1].replace('.', '').replace(',', '');
-		}
-		else if(damageDescription.length > 1 && damageDescription[1].toLowerCase().includes('recharge'))
-		{
-			damageDescription = "recharge";
-		}
-		else
-		{
-			damageDescription = "";
-		}
+        return null;
+    }
 
-		//1d4+2
-		var dice = damage.replace('(','').replace(')','').replace(' ', '');
+    BuildToHitRoll()
+    {
+        var toHit = this.MatchFirstAndRebuild(/(?:\+|\-)\d{1,}\sto\shit/g);
 
-		//Makes sure we are not capturing things like "(perception)" or ("2 actions")
-		if(isNaN(parseInt(dice.charAt(0))))
-		{
-			return null;
-		}
+        if(toHit === null)
+        {
+            return null;
+        }
 
-		var modifier = 0;
+        var reach = this.MatchFirstAndRebuild(/reach\s\d{1,}\sft\.\sor\srange\s[0-9/]{1,}\sft\./g);
 
-		if(dice.includes('+'))
-		{
-			//1d4 , 2
-			var diceSplit = dice.split('+');
-			//1d4
-			dice = diceSplit[0];
-			//2
-			modifier = parseInt(diceSplit[1]);
-		}
-		else if(dice.includes('-'))
-		{
-			//1d4 , 2
-			var diceSplit = dice.split('-');
-			//1d4
-			dice = diceSplit[0].trim();
-			//-2
-			modifier = parseInt(diceSplit[1].trim()) * -1;
-		}
+        if(reach === null)
+        {
+            var reach = this.MatchFirstAndRebuild(/reach\s[0-9/]{1,}\sft/g);
+        }
 
-		//1 , 4
-		var diceSplit = dice.split('d');
-		//1
-		var numberOfDice = parseInt(diceSplit[0]);
-		//4
-		var sidesOfDice = parseInt(diceSplit[1]);
+        if(reach === null)
+        {
+            var reach = this.MatchFirstAndRebuild(/range\s\d{1,}\sft\.\sor\srange\s[0-9/]{1,}\sft\./g);
+        }
 
-		var roll = new Roll(numberOfDice, sidesOfDice, modifier, damageDescription)
+        if(reach === null)
+        {
+            var reach = this.MatchFirstAndRebuild(/range\s[0-9/]{1,}\sft/g);
+        }
 
-		//Setting up this specific roll found, to be uniquely rollable outside of the main action later
-		var hookedHtml = this.Element.html().replace(`${rawRollText} ${damageDescription}`,`<span class="${roll.Id}">${rawRollText} ${damageDescription}</span>`);
+        var modifier = parseInt(toHit.replace('+','').replace(' to hit',''));
 
-		//Replace html
-		this.Element.html(hookedHtml);
+        return new HitRoll(modifier, "to hit", reach)
+    }
 
-		return roll;
-	}
+    BuildDamageContainers()
+    {
+        var savingThrow = this.Description.match(/\sDC\s\d{1,}\s\w{1,}\ssaving\sthrow/g);
+        var savingThrowText = null;
 
-	ExecuteRollContainer()
-	{
-		var attackRoll = this.RollContainer.AttackContainer;
-		var damageRolls = this.RollContainer.DamageRolls;
-		var mainAction = {};
+        if(savingThrow !== null)
+        {
+            var textParts = this.Description.split(/\sDC\s\d{1,}\s\w{1,}\ssaving\sthrow/g);
+            this.Description = textParts.shift();
+            savingThrowText = textParts.join();
+        }
 
-		if(attackRoll === null)
-		{
-			mainAction =
-			{
-				Title: this.Name,
-				MainRoll:
-				{
-					Dice: 0,
-					LinkedRolls: [],
-					DiceFound: false
-				}
-			};
-		}
-		else
-		{
-			mainAction =
-			{
-				Title: this.Name,
-				MainRoll:
-				{
-					Description: attackRoll.Description,
-					Dice: attackRoll.NumberOfDice,
-					Sides: attackRoll.DieSides,
-					Modifier: attackRoll.Modifier,
-					LinkedRolls: []
-				}
-			};
-		}
+        //Splits the different damage choices so each can be processed
+        var damageBodies = this.Description.split(/ damage, or /g);
 
-		damageRolls.forEach(function(damageContainer)
-		{
-			mainAction.MainRoll.LinkedRolls.push(
-			{
-				Description: damageContainer.Description,
-				Dice: damageContainer.NumberOfDice,
-				Sides: damageContainer.DieSides,
-				Modifier: damageContainer.Modifier
-			});
-		});
+        var damageContainers = [];
+        var action = this;
 
-		ExecuteActions([mainAction]);
-	}
+        damageBodies.forEach(function(text) 
+        {
+            text = `${text} damage`;
 
-	InjectClickToRollIntoDom()
-	{
-		this.Rollable = true;
-		var action = this;
-		
-		this.AddClickToRollToElement(this.Element.find('.action_title'), function()
-		{ 
-			action.ExecuteRollContainer();
-		});
+            var damageContainer = action.BuildDamageContainer(text)                                                                                                                                    
+            if(damageContainer !== null)
+            {
+                damageContainers.push(damageContainer);
+            }
+        });
 
-		this.RollContainer.DamageRolls.forEach(function(roll)
-		{
-			action.AddClickToRollToElement($(`.${roll.Id}`), function()
-			{ 
-				ExecuteActions(
-				[{
-					Title: action.Name,
-					MainRoll: {
-						Dice: 0,
-						LinkedRolls: [{
-							Description: roll.Description,
-							Dice: roll.NumberOfDice,
-							Sides: roll.DieSides,
-							Modifier: roll.Modifier
-						}],
-						DiceFound: false
-					}
-				}]);
-			});
-		});
-	}
+        if(savingThrowText !== null)
+        {
+            var damageContainer = action.BuildDamageContainer(savingThrowText, savingThrow)                                                                                                                                    
+            if(damageContainer !== null)
+            {
+                damageContainers.push(damageContainer);
+            }
+        }
 
-	static BuildAll()
-	{
-		var actions = [];
+        if(damageContainers.length !== 0)
+        {
+            return damageContainers;
+        }
 
-		$('.mon-stat-block__description-block').each(function()
-		{
-			$(this).find('.mon-stat-block__description-block-content').find('p').each(function()
-			{
-				var action = new Action($(this));
+        return null;
+    }
 
-				if(action.Valid === true)
-				{
-					actions.push(action);
-				}
-			});
-		});
+    BuildDamageContainer(rawRollText, savingThrow = null)
+    {
+        var rawDamageRolls = rawRollText.match(/\(\d{1,}d\d{1,}(?:\s(?:\+|\-)\s\d\)|\))\s\w{1,}\sdamage/g);
 
-		return actions;
-	}
+        if(rawDamageRolls === null)
+        {
+            return null;
+        }
+
+        var damageRolls = [];
+        var action = this;
+
+        rawDamageRolls.forEach(function(damageRollText)
+        {
+            damageRolls.push(action.BuildRoll(damageRollText));
+        });
+
+        return damageRolls;
+    }
+
+    BuildEffectRolls(effectRolls)
+    { 
+        var rawEffectRolls = this.Description.match(/\s\d{1,}d\d{1,}\s\w{1,}/g);
+
+        if(rawEffectRolls === null)
+        {
+            return effectRolls;
+        }
+
+        var action = this;
+
+        if(effectRolls === null)
+        {
+            effectRolls = [];
+        }
+
+        rawEffectRolls.forEach(function(damageRollText)
+        {
+            effectRolls.push(action.BuildRoll(damageRollText));
+        });
+
+        return damageRolls;
+    }
+
+    BuildRoll(rollText)
+    {
+        var sections = rollText.match(/[\w+-]{1,}/g);
+        var dice = sections[0];
+        var modifier = 0;
+        var damageType = sections[3]
+
+        //Contains modifier
+        if(sections.length > 3)
+        {
+            var modOp = sections[1];
+            var mod = sections[2];
+
+            if(modOp === '+')
+            {
+                modifier = parseInt(mod);
+            }
+            else
+            {
+                modifier = parseInt(mod) * -1;
+            }
+        }
+
+        var diceSplit = dice.split('d');
+        var numberOfDice = parseInt(diceSplit[0]);
+        var sidesOfDice = parseInt(diceSplit[1]);
+
+        var roll = new DamageRoll(numberOfDice, sidesOfDice, modifier, damageType);
+
+        return roll;
+    }
+
+    ExecuteRollContainer()
+    {
+        var attackRoll = this.RollContainer.AttackContainer;
+        var damageRolls = this.RollContainer.DamageRolls;
+        var mainAction = {};
+
+        if(attackRoll === null)
+        {
+            mainAction =
+            {
+                Title: this.Name,
+                MainRoll:
+                {
+                    Dice: 0,
+                    LinkedRolls: [],
+                    DiceFound: false
+                }
+            };
+        }
+        else
+        {
+            mainAction =
+            {
+                Title: this.Name,
+                MainRoll:
+                {
+                    Description: attackRoll.Description,
+                    Dice: attackRoll.NumberOfDice,
+                    Sides: attackRoll.DieSides,
+                    Modifier: attackRoll.Modifier,
+                    LinkedRolls: []
+                }
+            };
+        }
+
+        damageRolls.forEach(function(damageContainer)
+        {
+            mainAction.MainRoll.LinkedRolls.push(
+            {
+                Description: damageContainer.Description,
+                Dice: damageContainer.NumberOfDice,
+                Sides: damageContainer.DieSides,
+                Modifier: damageContainer.Modifier
+            });
+        });
+
+        ExecuteActions([mainAction]);
+    }
+
+    InjectClickToRollIntoDom()
+    {
+        this.Rollable = true;
+        var action = this;
+        
+        this.AddClickToRollToElement(this.Element.find('.action_title'), function()
+        { 
+            action.ExecuteRollContainer();
+        });
+
+        this.RollContainer.DamageRolls.forEach(function(roll)
+        {
+            action.AddClickToRollToElement($(`.${roll.Id}`), function()
+            { 
+                ExecuteActions(
+                [{
+                    Title: action.Name,
+                    MainRoll: {
+                        Dice: 0,
+                        LinkedRolls: [{
+                            Description: roll.Description,
+                            Dice: roll.NumberOfDice,
+                            Sides: roll.DieSides,
+                            Modifier: roll.Modifier
+                        }],
+                        DiceFound: false
+                    }
+                }]);
+            });
+        });
+    }
 }
